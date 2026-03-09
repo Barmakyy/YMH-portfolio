@@ -1,38 +1,11 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { FiArrowRight, FiClock, FiCalendar } from 'react-icons/fi';
 import { Card, Badge } from '../ui';
+import axios from 'axios';
 
-// Mock data - will be replaced with API data
-const recentPosts = [
-  {
-    id: 1,
-    title: 'Building Scalable APIs with Express.js',
-    slug: 'building-scalable-apis-express',
-    excerpt: 'Learn best practices for creating production-ready REST APIs using Express.js and MongoDB.',
-    tags: ['Node.js', 'Express', 'API'],
-    publishDate: '2026-02-20',
-    readTime: 8,
-  },
-  {
-    id: 2,
-    title: 'State Management in React: Redux vs Zustand',
-    slug: 'state-management-react-redux-zustand',
-    excerpt: 'A comprehensive comparison of Redux and Zustand for managing state in React applications.',
-    tags: ['React', 'Redux', 'Zustand'],
-    publishDate: '2026-02-15',
-    readTime: 6,
-  },
-  {
-    id: 3,
-    title: 'MongoDB Aggregation Pipeline Deep Dive',
-    slug: 'mongodb-aggregation-pipeline',
-    excerpt: 'Master the MongoDB aggregation pipeline with practical examples and optimization tips.',
-    tags: ['MongoDB', 'Database'],
-    publishDate: '2026-02-10',
-    readTime: 10,
-  },
-];
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('en-US', {
@@ -43,6 +16,28 @@ const formatDate = (dateString) => {
 };
 
 const BlogPreview = () => {
+  const [recentPosts, setRecentPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    axios.get(`${API_URL}/blog/public`)
+      .then(({ data }) => setRecentPosts((data.data || []).slice(0, 3)))
+      .catch(err => console.error('Failed to fetch posts:', err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-24 bg-bg-secondary">
+        <div className="container-custom flex justify-center">
+          <div className="w-10 h-10 border-4 border-accent/30 border-t-accent rounded-full animate-spin" />
+        </div>
+      </section>
+    );
+  }
+
+  if (recentPosts.length === 0) return null;
+
   return (
     <section className="py-24 bg-bg-secondary">
       <div className="container-custom">
@@ -63,7 +58,7 @@ const BlogPreview = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {recentPosts.map((post, index) => (
             <motion.div
-              key={post.id}
+              key={post._id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -72,7 +67,7 @@ const BlogPreview = () => {
               <Card className="h-full flex flex-col">
                 {/* Tags */}
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {post.tags.slice(0, 2).map((tag) => (
+                  {(post.tags || []).slice(0, 2).map((tag) => (
                     <Badge key={tag} variant="accent" size="sm">
                       {tag}
                     </Badge>

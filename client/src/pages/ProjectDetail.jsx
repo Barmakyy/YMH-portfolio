@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiExternalLink, FiGithub, FiArrowLeft, FiArrowRight, FiCalendar, FiUsers, FiTag } from 'react-icons/fi';
@@ -6,6 +7,9 @@ import {
   SiReact, SiNodedotjs, SiMongodb, SiExpress, SiStripe, SiRedux,
   SiTailwindcss, SiSocketdotio, SiJavascript
 } from 'react-icons/si';
+import axios from 'axios';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // Tech icon mapping
 const techIcons = {
@@ -15,91 +19,34 @@ const techIcons = {
   'Express': { icon: SiExpress, color: '#ffffff' },
   'Stripe': { icon: SiStripe, color: '#635BFF' },
   'Redux': { icon: SiRedux, color: '#764ABC' },
+  'Tailwind CSS': { icon: SiTailwindcss, color: '#06B6D4' },
   'Tailwind': { icon: SiTailwindcss, color: '#06B6D4' },
   'Socket.io': { icon: SiSocketdotio, color: '#ffffff' },
   'JavaScript': { icon: SiJavascript, color: '#F7DF1E' },
 };
 
-// Mock data - will be replaced with API data
-const projectData = {
-  'ecommerce-platform': {
-    title: 'E-Commerce Platform',
-    shortDescription: 'Full-stack MERN e-commerce solution with payment integration and admin dashboard.',
-    coverImage: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&h=800&fit=crop',
-    techStack: ['React', 'Node.js', 'MongoDB', 'Express', 'Stripe', 'Redux'],
-    projectType: 'Full-Stack Application',
-    teamSize: 1,
-    timeline: 'Jan 2025 – Mar 2025',
-    status: 'Live',
-    liveUrl: 'https://example.com',
-    githubUrl: 'https://github.com',
-    overview: `
-      <p>This e-commerce platform is a comprehensive solution for online retailers, featuring a modern React frontend, 
-      a robust Node.js backend, and MongoDB for data persistence. The platform handles everything from product 
-      browsing to secure checkout with Stripe payment integration.</p>
-      <p>The admin dashboard provides complete control over products, orders, and customer management, 
-      making it easy for business owners to manage their online store without technical knowledge.</p>
-    `,
-    problem: `
-      <p>Small and medium businesses often struggle to find affordable e-commerce solutions that don't 
-      require extensive technical knowledge to manage. Many existing platforms are either too expensive, 
-      too limited in features, or require constant developer intervention for basic operations.</p>
-    `,
-    solution: `
-      <h3>Architecture</h3>
-      <p>The application follows a modern three-tier architecture with clear separation of concerns:</p>
-      <ul>
-        <li><strong>Presentation Layer:</strong> React with Redux for state management</li>
-        <li><strong>Business Logic Layer:</strong> Express.js with middleware-based request processing</li>
-        <li><strong>Data Layer:</strong> MongoDB with Mongoose ODM for schema validation</li>
-      </ul>
-      <h3>Key Technical Decisions</h3>
-      <p>Redux was chosen for state management due to the complex state requirements of an e-commerce 
-      application (cart, user session, product filters, etc.). The predictable state container pattern 
-      makes debugging easier and enables powerful features like time-travel debugging.</p>
-    `,
-    features: [
-      { name: 'Product Catalog', description: 'Searchable, filterable product listings with categories and tags' },
-      { name: 'Shopping Cart', description: 'Persistent cart with real-time updates and guest checkout support' },
-      { name: 'Secure Payments', description: 'Stripe integration with support for multiple payment methods' },
-      { name: 'Admin Dashboard', description: 'Complete order, product, and customer management interface' },
-      { name: 'User Authentication', description: 'JWT-based auth with secure password hashing' },
-      { name: 'Order Tracking', description: 'Real-time order status updates with email notifications' },
-    ],
-    challenges: [
-      {
-        challenge: 'Handling concurrent cart updates',
-        solution: 'Implemented optimistic updates with rollback on conflict, using Redux middleware to sync with the backend.',
-      },
-      {
-        challenge: 'Payment security compliance',
-        solution: 'Used Stripe Elements to ensure PCI compliance, keeping sensitive card data off our servers entirely.',
-      },
-      {
-        challenge: 'Performance with large product catalogs',
-        solution: 'Implemented pagination, lazy loading, and MongoDB indexing to maintain sub-200ms response times.',
-      },
-    ],
-    results: [
-      { metric: '100+', label: 'Products Managed' },
-      { metric: '<200ms', label: 'Avg Response Time' },
-      { metric: '99.9%', label: 'Uptime' },
-      { metric: '4.8/5', label: 'User Rating' },
-    ],
-    lessons: [
-      'Starting with a well-defined database schema saves significant refactoring time later.',
-      'Stripe\'s documentation is excellent – investing time reading it pays off in implementation speed.',
-      'Redux boilerplate can be reduced significantly with Redux Toolkit.',
-    ],
-    relatedProjects: ['project-management-app', 'social-media-dashboard'],
-  },
-};
-
 const ProjectDetail = () => {
   const { slug } = useParams();
-  const project = projectData[slug];
+  const [project, setProject] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-  if (!project) {
+  useEffect(() => {
+    axios.get(`${API_URL}/projects/public/${slug}`)
+      .then(({ data }) => setProject(data.data))
+      .catch(() => setError(true))
+      .finally(() => setLoading(false));
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="py-24 flex justify-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-accent" />
+      </div>
+    );
+  }
+
+  if (error || !project) {
     return (
       <div className="py-24">
         <div className="container-custom text-center">
@@ -144,19 +91,25 @@ const ProjectDetail = () => {
           
           {/* Meta */}
           <div className="flex flex-wrap items-center gap-4 text-sm text-text-secondary mb-6">
-            <span className="flex items-center gap-1">
-              <FiTag size={14} />
-              {project.projectType}
-            </span>
-            <span className="flex items-center gap-1">
-              <FiCalendar size={14} />
-              {project.timeline}
-            </span>
+            {project.projectType?.length > 0 && (
+              <span className="flex items-center gap-1">
+                <FiTag size={14} />
+                {project.projectType.join(', ')}
+              </span>
+            )}
+            {(project.startDate || project.endDate) && (
+              <span className="flex items-center gap-1">
+                <FiCalendar size={14} />
+                {project.startDate ? new Date(project.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : ''}
+                {project.endDate || project.ongoing ? ' – ' : ''}
+                {project.ongoing ? 'Present' : project.endDate ? new Date(project.endDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : ''}
+              </span>
+            )}
             <span className="flex items-center gap-1">
               <FiUsers size={14} />
               {project.teamSize === 1 ? 'Solo Project' : `Team of ${project.teamSize}`}
             </span>
-            <Badge variant="success">{project.status}</Badge>
+            <Badge variant="success">{project.status === 'published' ? 'Live' : project.status}</Badge>
           </div>
 
           {/* CTAs */}
@@ -190,7 +143,7 @@ const ProjectDetail = () => {
           <img
             src={project.coverImage}
             alt={project.title}
-            className="w-full h-auto"
+            className="w-full max-h-[400px] object-contain mx-auto"
           />
         </motion.div>
 
@@ -219,132 +172,41 @@ const ProjectDetail = () => {
             </div>
           </motion.section>
 
-          {/* Overview */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-16"
-          >
-            <h2 className="text-2xl font-bold mb-6">Overview</h2>
-            <div 
-              className="prose prose-lg prose-invert max-w-none"
-              dangerouslySetInnerHTML={{ __html: project.overview }}
-            />
-          </motion.section>
-
-          {/* Problem */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-16"
-          >
-            <h2 className="text-2xl font-bold mb-6">The Problem</h2>
-            <Card className="border-l-4 border-l-warning">
+          {/* Overview / Body */}
+          {project.body && (
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mb-16"
+            >
+              <h2 className="text-2xl font-bold mb-6">Overview</h2>
               <div 
-                className="prose prose-invert max-w-none"
-                dangerouslySetInnerHTML={{ __html: project.problem }}
+                className="prose prose-lg prose-invert max-w-none"
+                dangerouslySetInnerHTML={{ __html: project.body }}
               />
-            </Card>
-          </motion.section>
+            </motion.section>
+          )}
 
-          {/* Solution */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-16"
-          >
-            <h2 className="text-2xl font-bold mb-6">The Solution</h2>
-            <div 
-              className="prose prose-lg prose-invert max-w-none"
-              dangerouslySetInnerHTML={{ __html: project.solution }}
-            />
-          </motion.section>
-
-          {/* Features */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-16"
-          >
-            <h2 className="text-2xl font-bold mb-6">Key Features</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {project.features.map((feature, index) => (
-                <Card key={index}>
-                  <h3 className="font-bold mb-2">{feature.name}</h3>
-                  <p className="text-text-secondary text-sm">{feature.description}</p>
-                </Card>
-              ))}
-            </div>
-          </motion.section>
-
-          {/* Challenges */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-16"
-          >
-            <h2 className="text-2xl font-bold mb-6">Challenges & Solutions</h2>
-            <div className="space-y-6">
-              {project.challenges.map((item, index) => (
-                <Card key={index}>
-                  <div className="flex gap-4">
-                    <div className="w-8 h-8 bg-error/20 text-error rounded-full flex items-center justify-center flex-shrink-0 font-bold">
-                      {index + 1}
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-error mb-2">Challenge</h3>
-                      <p className="text-text-secondary mb-4">{item.challenge}</p>
-                      <h3 className="font-bold text-success mb-2">Solution</h3>
-                      <p className="text-text-secondary">{item.solution}</p>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </motion.section>
-
-          {/* Results */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-16"
-          >
-            <h2 className="text-2xl font-bold mb-6">Results & Impact</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {project.results.map((result, index) => (
-                <Card key={index} className="text-center">
-                  <div className="text-3xl font-bold text-accent mb-1">{result.metric}</div>
-                  <div className="text-text-secondary text-sm">{result.label}</div>
-                </Card>
-              ))}
-            </div>
-          </motion.section>
-
-          {/* Lessons */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-16"
-          >
-            <h2 className="text-2xl font-bold mb-6">Lessons Learned</h2>
-            <Card className="bg-bg-tertiary">
-              <ul className="space-y-3">
-                {project.lessons.map((lesson, index) => (
-                  <li key={index} className="flex items-start gap-3">
-                    <span className="text-accent mt-1">💡</span>
-                    <span className="text-text-secondary">{lesson}</span>
-                  </li>
+          {/* Other Links */}
+          {project.otherLinks?.length > 0 && (
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mb-16"
+            >
+              <h2 className="text-2xl font-bold mb-6">Links</h2>
+              <div className="flex flex-wrap gap-3">
+                {project.otherLinks.map((link, i) => (
+                  <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-bg-secondary border border-border rounded-lg text-sm hover:border-accent transition-colors">
+                    <FiExternalLink size={14} /> {link.label}
+                  </a>
                 ))}
-              </ul>
-            </Card>
-          </motion.section>
+              </div>
+            </motion.section>
+          )}
 
           {/* Navigation */}
           <motion.div

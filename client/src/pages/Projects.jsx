@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { 
@@ -8,118 +8,24 @@ import {
 import { HiOutlineSparkles, HiOutlineLightningBolt } from 'react-icons/hi';
 import { SiReact, SiNodedotjs, SiMongodb, SiExpress, SiTailwindcss } from 'react-icons/si';
 import { Card, Badge, Button } from '../components/ui';
+import axios from 'axios';
 
-// Mock data - will be replaced with API data
-const projects = [
-  {
-    id: 1,
-    title: 'E-Commerce Platform',
-    slug: 'ecommerce-platform',
-    shortDescription: 'Full-stack MERN e-commerce solution with cart functionality, user authentication, and responsive design.',
-    coverImage: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop',
-    techStack: ['React', 'Node.js', 'MongoDB', 'Express', 'Tailwind CSS'],
-    projectType: ['fullstack', 'personal'],
-    status: 'Live',
-    featured: true,
-    liveUrl: '#',
-    githubUrl: '#',
-    metrics: { commits: 120, duration: '3 weeks' },
-    highlights: ['JWT Auth', 'Cart System', 'REST API'],
-    completedDate: '2024',
-  },
-  {
-    id: 2,
-    title: 'Task Management App',
-    slug: 'task-management-app',
-    shortDescription: 'Kanban-style project management tool with drag-and-drop functionality.',
-    coverImage: 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=800&h=600&fit=crop',
-    techStack: ['React', 'Express', 'MongoDB', 'Tailwind CSS'],
-    projectType: ['fullstack', 'personal'],
-    status: 'Live',
-    featured: true,
-    liveUrl: '#',
-    githubUrl: '#',
-    metrics: { commits: 85, duration: '2 weeks' },
-    highlights: ['Drag & Drop', 'CRUD', 'Clean UI'],
-    completedDate: '2024',
-  },
-  {
-    id: 3,
-    title: 'Weather Dashboard',
-    slug: 'weather-dashboard',
-    shortDescription: 'Beautiful weather application with location-based forecasts and animations.',
-    coverImage: 'https://images.unsplash.com/photo-1592210454359-9043f067919b?w=800&h=600&fit=crop',
-    techStack: ['React', 'OpenWeather API', 'Framer Motion', 'CSS'],
-    projectType: ['frontend', 'personal'],
-    status: 'Live',
-    featured: false,
-    liveUrl: '#',
-    githubUrl: '#',
-    metrics: { commits: 45, duration: '1 week' },
-    highlights: ['API Integration', 'Geolocation'],
-    completedDate: '2024',
-  },
-  {
-    id: 4,
-    title: 'Blog CMS',
-    slug: 'blog-cms',
-    shortDescription: 'Content management system with markdown support and image uploads.',
-    coverImage: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&h=600&fit=crop',
-    techStack: ['Node.js', 'Express', 'MongoDB', 'React', 'Cloudinary'],
-    projectType: ['fullstack', 'personal'],
-    status: 'Live',
-    featured: false,
-    liveUrl: '#',
-    githubUrl: '#',
-    metrics: { commits: 68, duration: '2 weeks' },
-    highlights: ['Markdown', 'Image Upload'],
-    completedDate: '2024',
-  },
-  {
-    id: 5,
-    title: 'Portfolio Website',
-    slug: 'portfolio-website',
-    shortDescription: 'Modern portfolio with dark mode, smooth animations, and responsive design.',
-    coverImage: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop',
-    techStack: ['React', 'Tailwind CSS', 'Framer Motion', 'Vite'],
-    projectType: ['frontend', 'personal'],
-    status: 'Live',
-    featured: false,
-    liveUrl: '#',
-    githubUrl: '#',
-    metrics: { commits: 95, duration: '2 weeks' },
-    highlights: ['Dark Mode', 'Animations'],
-    completedDate: '2025',
-  },
-  {
-    id: 6,
-    title: 'Expense Tracker',
-    slug: 'expense-tracker',
-    shortDescription: 'Personal finance app with charts, categories, and budget tracking.',
-    coverImage: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=600&fit=crop',
-    techStack: ['React', 'Chart.js', 'Node.js', 'MongoDB'],
-    projectType: ['fullstack', 'personal'],
-    status: 'Live',
-    featured: false,
-    liveUrl: '#',
-    githubUrl: '#',
-    metrics: { commits: 62, duration: '2 weeks' },
-    highlights: ['Charts', 'Budget Goals'],
-    completedDate: '2024',
-  },
-];
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const techFilters = ['All', 'React', 'Node.js', 'MongoDB', 'Express', 'Tailwind CSS'];
 const typeFilters = ['All', 'Full-Stack', 'Frontend'];
 
 const typeMap = {
-  'Full-Stack': 'fullstack',
-  'Frontend': 'frontend',
+  'Full-Stack': ['Full-Stack App', 'fullstack'],
+  'Frontend': ['Frontend', 'frontend'],
 };
 
 const statusColors = {
+  'published': 'success',
   'Live': 'success',
+  'draft': 'warning',
   'In Development': 'warning',
+  'archived': 'default',
   'Archived': 'default',
 };
 
@@ -132,13 +38,15 @@ const techIcons = {
 };
 
 const projectStats = [
-  { icon: FiFolder, label: 'Projects', value: '8+' },
-  { icon: FiCode, label: 'Commits', value: '500+' },
+  { icon: FiFolder, label: 'Projects', getValue: (p) => p.length || '0' },
+  { icon: FiEye, label: 'Total Views', getValue: (p) => p.reduce((sum, proj) => sum + (proj.views || 0), 0) },
   { icon: FiGithub, label: 'Repos', value: '15+' },
-  { icon: FiStar, label: 'Tech Used', value: '12+' },
+  { icon: FiStar, label: 'Tech Used', getValue: (p) => new Set(p.flatMap((proj) => proj.techStack || [])).size || '0' },
 ];
 
 const Projects = () => {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedTech, setSelectedTech] = useState('All');
   const [selectedType, setSelectedType] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
@@ -146,12 +54,20 @@ const Projects = () => {
   const headerRef = useRef(null);
   const isHeaderInView = useInView(headerRef, { once: true });
 
+  useEffect(() => {
+    axios.get(`${API_URL}/projects/public`)
+      .then(({ data }) => setProjects(data.data))
+      .catch((err) => console.error('Failed to fetch projects:', err))
+      .finally(() => setLoading(false));
+  }, []);
+
   const filteredProjects = projects.filter((project) => {
-    const techMatch = selectedTech === 'All' || project.techStack.includes(selectedTech);
-    const typeMatch = selectedType === 'All' || project.projectType.includes(typeMap[selectedType]);
+    const techMatch = selectedTech === 'All' || project.techStack?.includes(selectedTech);
+    const typeMatch = selectedType === 'All' || 
+      project.projectType?.some((t) => typeMap[selectedType]?.includes(t));
     const searchMatch = !searchQuery || 
       project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.shortDescription.toLowerCase().includes(searchQuery.toLowerCase());
+      (project.shortDescription || '').toLowerCase().includes(searchQuery.toLowerCase());
     return techMatch && typeMatch && searchMatch;
   });
 
@@ -216,7 +132,7 @@ const Projects = () => {
                   className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4"
                 >
                   <stat.icon className="w-5 h-5 text-accent mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-white drop-shadow-sm">{stat.value}</div>
+                  <div className="text-2xl font-bold text-white drop-shadow-sm">{stat.getValue ? stat.getValue(projects) : stat.value}</div>
                   <div className="text-xs text-gray-200">{stat.label}</div>
                 </motion.div>
               ))}
@@ -227,6 +143,12 @@ const Projects = () => {
 
       <div className="container-custom pt-10">
 
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-accent" />
+          </div>
+        ) : (
+        <>
         {/* Filter Bar */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -341,7 +263,7 @@ const Projects = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {featuredProjects.map((project, index) => (
                 <motion.div
-                  key={project.id}
+                  key={project._id || project.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
@@ -364,7 +286,7 @@ const Projects = () => {
                       <div className="p-6 flex flex-col">
                         <div className="flex items-center gap-2 text-xs text-text-muted mb-3">
                           <FiCalendar className="w-3 h-3" />
-                          {project.completedDate} · {project.metrics.duration}
+                          {project.startDate ? new Date(project.startDate).getFullYear() : new Date(project.createdAt).getFullYear()}
                         </div>
 
                         <h3 className="text-xl font-bold mb-2 group-hover:text-accent transition-colors">
@@ -375,14 +297,6 @@ const Projects = () => {
                           {project.shortDescription}
                         </p>
 
-                        <div className="flex flex-wrap gap-1.5 mb-4">
-                          {project.highlights.map((highlight) => (
-                            <span key={highlight} className="px-2 py-1 bg-bg-tertiary text-text-secondary text-xs rounded">
-                              {highlight}
-                            </span>
-                          ))}
-                        </div>
-
                         <div className="flex flex-wrap gap-2 mb-4">
                           {project.techStack.map((tech) => (
                             <Badge key={tech} size="sm">{tech}</Badge>
@@ -391,8 +305,8 @@ const Projects = () => {
 
                         <div className="flex items-center gap-4 text-xs text-text-muted mb-4 py-3 border-t border-border">
                           <span className="flex items-center gap-1">
-                            <FiCode className="w-3 h-3" />
-                            {project.metrics.commits} commits
+                            <FiEye className="w-3 h-3" />
+                            {project.views || 0} views
                           </span>
                         </div>
 
@@ -453,7 +367,7 @@ const Projects = () => {
                 <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {(hasActiveFilters ? filteredProjects : regularProjects).map((project, index) => (
                     <motion.div
-                      key={project.id}
+                      key={project._id || project.id}
                       layout
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -471,7 +385,7 @@ const Projects = () => {
                           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                           <div className="absolute top-3 left-3">
                             <Badge variant={statusColors[project.status]} size="sm">
-                              {project.status}
+                              {project.status === 'published' ? 'Live' : project.status}
                             </Badge>
                           </div>
                           <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -501,7 +415,7 @@ const Projects = () => {
                         <div className="p-5 flex-grow flex flex-col">
                           <div className="flex items-center gap-2 text-xs text-text-muted mb-2">
                             <FiCalendar className="w-3 h-3" />
-                            {project.completedDate}
+                            {project.startDate ? new Date(project.startDate).getFullYear() : new Date(project.createdAt).getFullYear()}
                           </div>
 
                           <h3 className="text-lg font-bold mb-2 group-hover:text-accent transition-colors">
@@ -530,8 +444,8 @@ const Projects = () => {
                             </Link>
                             <div className="flex items-center gap-3 text-xs text-text-muted">
                               <span className="flex items-center gap-1">
-                                <FiCode className="w-3 h-3" />
-                                {project.metrics.commits}
+                                <FiEye className="w-3 h-3" />
+                                {project.views || 0}
                               </span>
                             </div>
                           </div>
@@ -544,7 +458,7 @@ const Projects = () => {
                 <motion.div layout className="space-y-4">
                   {(hasActiveFilters ? filteredProjects : regularProjects).map((project, index) => (
                     <motion.div
-                      key={project.id}
+                      key={project._id || project.id}
                       layout
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -562,8 +476,8 @@ const Projects = () => {
                           </div>
                           <div className="flex-grow flex flex-col">
                             <div className="flex items-center gap-2 mb-2">
-                              <Badge variant={statusColors[project.status]} size="sm">{project.status}</Badge>
-                              <span className="text-xs text-text-muted">{project.completedDate}</span>
+                              <Badge variant={statusColors[project.status]} size="sm">{project.status === 'published' ? 'Live' : project.status}</Badge>
+                              <span className="text-xs text-text-muted">{project.startDate ? new Date(project.startDate).getFullYear() : new Date(project.createdAt).getFullYear()}</span>
                             </div>
                             <h3 className="text-lg font-bold mb-1 group-hover:text-accent transition-colors">
                               {project.title}
@@ -616,6 +530,8 @@ const Projects = () => {
             )}
           </AnimatePresence>
         </section>
+        </>
+        )}
 
         {/* CTA Section */}
         <motion.section

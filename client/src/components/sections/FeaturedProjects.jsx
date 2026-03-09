@@ -1,41 +1,11 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { FiArrowRight, FiExternalLink, FiGithub } from 'react-icons/fi';
 import { Card, Badge } from '../ui';
+import axios from 'axios';
 
-// Mock data - will be replaced with API data
-const featuredProjects = [
-  {
-    id: 1,
-    title: 'E-Commerce Platform',
-    slug: 'ecommerce-platform',
-    shortDescription: 'Full-stack MERN e-commerce solution with payment integration and admin dashboard.',
-    coverImage: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop',
-    techStack: ['React', 'Node.js', 'MongoDB', 'Stripe'],
-    liveUrl: '#',
-    githubUrl: '#',
-  },
-  {
-    id: 2,
-    title: 'Project Management App',
-    slug: 'project-management-app',
-    shortDescription: 'Real-time collaborative project management tool with Kanban boards.',
-    coverImage: 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=800&h=600&fit=crop',
-    techStack: ['React', 'Express', 'Socket.io', 'MongoDB'],
-    liveUrl: '#',
-    githubUrl: '#',
-  },
-  {
-    id: 3,
-    title: 'Social Media Dashboard',
-    slug: 'social-media-dashboard',
-    shortDescription: 'Analytics dashboard for tracking social media metrics and engagement.',
-    coverImage: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop',
-    techStack: ['React', 'Node.js', 'Chart.js', 'REST API'],
-    liveUrl: '#',
-    githubUrl: '#',
-  },
-];
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -51,6 +21,33 @@ const itemVariants = {
 };
 
 const FeaturedProjects = () => {
+  const [featuredProjects, setFeaturedProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    axios.get(`${API_URL}/projects/public`)
+      .then(({ data }) => {
+        const projects = data.data || [];
+        // Show featured projects first, fallback to latest 3
+        const featured = projects.filter(p => p.featured);
+        setFeaturedProjects(featured.length > 0 ? featured.slice(0, 3) : projects.slice(0, 3));
+      })
+      .catch(err => console.error('Failed to fetch projects:', err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-24 bg-bg-primary">
+        <div className="container-custom flex justify-center">
+          <div className="w-10 h-10 border-4 border-accent/30 border-t-accent rounded-full animate-spin" />
+        </div>
+      </section>
+    );
+  }
+
+  if (featuredProjects.length === 0) return null;
+
   return (
     <section id="featured-projects" className="py-24 bg-bg-primary">
       <div className="container-custom">
@@ -77,7 +74,7 @@ const FeaturedProjects = () => {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           {featuredProjects.map((project) => (
-            <motion.div key={project.id} variants={itemVariants}>
+            <motion.div key={project._id} variants={itemVariants}>
               <Card className="h-full flex flex-col overflow-hidden group" padding={false}>
                 {/* Image */}
                 <div className="relative aspect-video overflow-hidden">
@@ -107,7 +104,7 @@ const FeaturedProjects = () => {
 
                   {/* Tech Stack */}
                   <div className="flex flex-wrap gap-2 mb-4">
-                    {project.techStack.map((tech) => (
+                    {(project.techStack || []).map((tech) => (
                       <Badge key={tech} variant="accent" size="sm">
                         {tech}
                       </Badge>
@@ -116,6 +113,7 @@ const FeaturedProjects = () => {
 
                   {/* Links */}
                   <div className="flex items-center gap-4 pt-4 border-t border-border">
+                    {project.liveUrl && (
                     <a
                       href={project.liveUrl}
                       target="_blank"
@@ -125,6 +123,8 @@ const FeaturedProjects = () => {
                       <FiExternalLink size={16} />
                       Live Demo
                     </a>
+                    )}
+                    {project.githubUrl && (
                     <a
                       href={project.githubUrl}
                       target="_blank"
@@ -134,6 +134,7 @@ const FeaturedProjects = () => {
                       <FiGithub size={16} />
                       GitHub
                     </a>
+                    )}
                   </div>
                 </div>
               </Card>

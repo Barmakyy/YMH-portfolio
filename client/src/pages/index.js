@@ -5,4 +5,5 @@ export { default as Projects } from './Projects';
 export { default as ProjectDetail } from './ProjectDetail';
 export { default as Experience } from './Experience';
 export { default as Blog } from './Blog';
+export { default as BlogDetail } from './BlogDetail';
 export { default as Contact } from './Contact';

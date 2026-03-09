@@ -1,77 +1,12 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import { FiSearch, FiClock, FiCalendar, FiArrowRight, FiBookOpen, FiFileText, FiTag } from 'react-icons/fi';
 import { HiOutlineSparkles, HiOutlinePencilAlt } from 'react-icons/hi';
 import { Card, Badge, Input } from '../components/ui';
 
-// Mock data - will be replaced with API data
-const posts = [
-  {
-    id: 1,
-    title: 'Building Scalable APIs with Express.js',
-    slug: 'building-scalable-apis-express',
-    excerpt: 'Learn best practices for creating production-ready REST APIs using Express.js and MongoDB. Covering middleware patterns, error handling, and security.',
-    coverImage: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop',
-    tags: ['Node.js', 'Express', 'API', 'Backend'],
-    publishDate: '2026-02-20',
-    readTime: 8,
-    featured: true,
-  },
-  {
-    id: 2,
-    title: 'State Management in React: Redux vs Zustand',
-    slug: 'state-management-react-redux-zustand',
-    excerpt: 'A comprehensive comparison of Redux and Zustand for managing state in React applications. Pros, cons, and when to use each.',
-    coverImage: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=600&fit=crop',
-    tags: ['React', 'Redux', 'Zustand', 'Frontend'],
-    publishDate: '2026-02-15',
-    readTime: 6,
-    featured: false,
-  },
-  {
-    id: 3,
-    title: 'MongoDB Aggregation Pipeline Deep Dive',
-    slug: 'mongodb-aggregation-pipeline',
-    excerpt: 'Master the MongoDB aggregation pipeline with practical examples and optimization tips. From basics to advanced techniques.',
-    coverImage: 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=800&h=600&fit=crop',
-    tags: ['MongoDB', 'Database', 'Backend'],
-    publishDate: '2026-02-10',
-    readTime: 10,
-    featured: false,
-  },
-  {
-    id: 4,
-    title: 'Implementing JWT Authentication in Node.js',
-    slug: 'jwt-authentication-nodejs',
-    excerpt: 'A complete guide to implementing secure JWT authentication in your Node.js applications with refresh tokens.',
-    coverImage: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=800&h=600&fit=crop',
-    tags: ['Node.js', 'Security', 'JWT', 'Authentication'],
-    publishDate: '2026-02-05',
-    readTime: 12,
-    featured: false,
-  },
-  {
-    id: 5,
-    title: 'React Performance Optimization Techniques',
-    slug: 'react-performance-optimization',
-    excerpt: 'Practical techniques to optimize your React applications for better performance. Memoization, code splitting, and more.',
-    coverImage: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=600&fit=crop',
-    tags: ['React', 'Performance', 'Frontend'],
-    publishDate: '2026-01-28',
-    readTime: 9,
-    featured: false,
-  },
-];
-
-const allTags = [...new Set(posts.flatMap((post) => post.tags))];
-
-const blogStats = [
-  { icon: FiFileText, label: 'Articles', value: '5+' },
-  { icon: FiBookOpen, label: 'Read Time', value: '45+ min' },
-  { icon: FiTag, label: 'Topics', value: '8+' },
-  { icon: HiOutlinePencilAlt, label: 'Words', value: '10K+' },
-];
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('en-US', {
@@ -82,15 +17,46 @@ const formatDate = (dateString) => {
 };
 
 const Blog = () => {
+  const [posts, setPosts] = useState([]);
+  const [allTags, setAllTags] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState(null);
   const headerRef = useRef(null);
   const isHeaderInView = useInView(headerRef, { once: true });
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [postsRes, tagsRes] = await Promise.all([
+          axios.get(`${API_URL}/blog/public`),
+          axios.get(`${API_URL}/blog/public/tags`),
+        ]);
+        setPosts(postsRes.data.data || []);
+        setAllTags(tagsRes.data.data || []);
+      } catch (err) {
+        console.error('Failed to fetch blog data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const totalReadTime = posts.reduce((sum, p) => sum + (p.readTime || 0), 0);
+  const totalWords = posts.reduce((sum, p) => sum + (p.wordCount || 0), 0);
+
+  const blogStats = [
+    { icon: FiFileText, label: 'Articles', value: `${posts.length}` },
+    { icon: FiBookOpen, label: 'Read Time', value: `${totalReadTime}+ min` },
+    { icon: FiTag, label: 'Topics', value: `${allTags.length}` },
+    { icon: HiOutlinePencilAlt, label: 'Words', value: totalWords >= 1000 ? `${(totalWords / 1000).toFixed(1)}K` : `${totalWords}` },
+  ];
+
   const filteredPosts = posts.filter((post) => {
     const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesTag = !selectedTag || post.tags.includes(selectedTag);
+      (post.excerpt || '').toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesTag = !selectedTag || (post.tags || []).includes(selectedTag);
     return matchesSearch && matchesTag;
   });
 
@@ -155,7 +121,11 @@ const Blog = () => {
       </div>
 
       <div className="container-custom py-10">
-
+        {loading ? (
+          <div className="flex items-center justify-center py-32">
+            <div className="w-10 h-10 border-4 border-accent/30 border-t-accent rounded-full animate-spin" />
+          </div>
+        ) : (
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
           {/* Main Content */}
           <div className="lg:col-span-3">
@@ -187,7 +157,7 @@ const Blog = () => {
                           {featuredPost.excerpt}
                         </p>
                         <div className="flex flex-wrap gap-2 mb-4">
-                          {featuredPost.tags.slice(0, 3).map((tag) => (
+                          {(featuredPost.tags || []).slice(0, 3).map((tag) => (
                             <Badge key={tag} size="sm">{tag}</Badge>
                           ))}
                         </div>
@@ -212,7 +182,7 @@ const Blog = () => {
             <div className="space-y-6">
               {regularPosts.map((post, index) => (
                 <motion.article
-                  key={post.id}
+                  key={post._id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
@@ -232,7 +202,7 @@ const Blog = () => {
                       {/* Content */}
                       <div className="flex-grow">
                         <div className="flex flex-wrap gap-2 mb-2">
-                          {post.tags.slice(0, 2).map((tag) => (
+                          {(post.tags || []).slice(0, 2).map((tag) => (
                             <Badge key={tag} variant="accent" size="sm">{tag}</Badge>
                           ))}
                         </div>
@@ -346,6 +316,7 @@ const Blog = () => {
             </div>
           </aside>
         </div>
+        )}
       </div>
     </div>
   );
