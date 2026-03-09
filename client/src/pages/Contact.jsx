@@ -42,9 +42,9 @@ const sourceOptions = [
 ];
 
 const socialLinks = [
-  { name: 'GitHub', icon: FiGithub, href: 'https://github.com/Barmakyy', username: 'Barmakyy' },
-  { name: 'LinkedIn', icon: FiLinkedin, href: 'https://www.linkedin.com/in/yahya-mohammed-6a3555366/', username: 'Yahya Mohamed' },
-  { name: 'Twitter', icon: FiTwitter, href: 'https://twitter.com', username: '@barmakyy' },
+  { name: 'GitHub', icon: FiGithub, href: import.meta.env.VITE_GITHUB_URL, username: 'Barmakyy' },
+  { name: 'LinkedIn', icon: FiLinkedin, href: import.meta.env.VITE_LINKEDIN_URL, username: import.meta.env.VITE_SITE_NAME },
+  { name: 'Twitter', icon: FiTwitter, href: import.meta.env.VITE_TWITTER_URL, username: '@barmakyy' },
 ];
 
 const contactStats = [
@@ -316,12 +316,12 @@ const Contact = () => {
                   <div>
                     <div className="text-sm text-text-muted">Email</div>
                     <a
-                      href="mailto:barmakyy10@gmail.com"
+                      href={`mailto:${import.meta.env.VITE_EMAIL}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-text-primary hover:text-accent transition-colors"
                     >
-                      barmakyy10@gmail.com
+                      {import.meta.env.VITE_EMAIL}
                     </a>
                   </div>
                 </div>

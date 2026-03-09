@@ -150,10 +150,10 @@ const timeline = [
 ];
 
 const socialLinks = [
-  { name: 'GitHub', icon: FiGithub, href: 'https://github.com', color: 'hover:bg-gray-700' },
-  { name: 'LinkedIn', icon: FiLinkedin, href: 'https://linkedin.com', color: 'hover:bg-blue-600' },
-  { name: 'Twitter', icon: FiTwitter, href: 'https://twitter.com', color: 'hover:bg-sky-500' },
-  { name: 'Email', icon: FiMail, href: 'mailto:hello@example.com', color: 'hover:bg-red-500' },
+  { name: 'GitHub', icon: FiGithub, href: import.meta.env.VITE_GITHUB_URL, color: 'hover:bg-gray-700' },
+  { name: 'LinkedIn', icon: FiLinkedin, href: import.meta.env.VITE_LINKEDIN_URL, color: 'hover:bg-blue-600' },
+  { name: 'Twitter', icon: FiTwitter, href: import.meta.env.VITE_TWITTER_URL, color: 'hover:bg-sky-500' },
+  { name: 'Email', icon: FiMail, href: `mailto:${import.meta.env.VITE_EMAIL}`, color: 'hover:bg-red-500' },
 ];
 
 // Floating Shape Component

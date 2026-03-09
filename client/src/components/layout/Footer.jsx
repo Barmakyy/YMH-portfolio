@@ -2,11 +2,11 @@ import { Link } from 'react-router-dom';
 import { FiGithub, FiLinkedin, FiTwitter, FiMail, FiHeart, FiInstagram } from 'react-icons/fi';
 
 const socialLinks = [
-  { name: 'GitHub', icon: FiGithub, href: 'https://github.com/Barmakyy' },
-  { name: 'LinkedIn', icon: FiLinkedin, href: 'https://www.linkedin.com/in/yahya-mohammed-6a3555366/' },
-  { name: 'Twitter', icon: FiTwitter, href: 'https://x.com/barmakyy' },
-  { name: 'Email', icon: FiMail, href: 'mailto:barmakyy10@gmail.com' },
-  { name: 'Instagram', icon: FiInstagram, href: 'https://www.instagram.com/barmakyy/' },
+  { name: 'GitHub', icon: FiGithub, href: import.meta.env.VITE_GITHUB_URL },
+  { name: 'LinkedIn', icon: FiLinkedin, href: import.meta.env.VITE_LINKEDIN_URL },
+  { name: 'Twitter', icon: FiTwitter, href: import.meta.env.VITE_TWITTER_URL },
+  { name: 'Email', icon: FiMail, href: `mailto:${import.meta.env.VITE_EMAIL}` },
+  { name: 'Instagram', icon: FiInstagram, href: import.meta.env.VITE_INSTAGRAM_URL },
 ];
 
 const footerLinks = [

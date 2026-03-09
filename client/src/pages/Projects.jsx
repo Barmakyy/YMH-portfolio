@@ -641,7 +641,7 @@ const Projects = () => {
               </Link>
             </motion.div>
             <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+              <a href={import.meta.env.VITE_GITHUB_URL} target="_blank" rel="noopener noreferrer">
                 <Button variant="outline" size="lg" className="px-10 py-4 text-base">
                   <FiGithub className="w-5 h-5" />
                   View GitHub
