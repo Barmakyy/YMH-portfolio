@@ -135,7 +135,7 @@ const MessagesPage = () => {
             <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4 sticky top-24">
               <div className="flex items-start justify-between">
                 <div>
-                  <h2 className="text-lg font-bold">{selected.name}</h2>
+                  <h2 className="text-black font-bold">{selected.name}</h2>
                   <p className="text-sm text-gray-500">{selected.email}</p>
                 </div>
                 <span className={`px-2 py-0.5 rounded-full text-xs font-medium capitalize ${

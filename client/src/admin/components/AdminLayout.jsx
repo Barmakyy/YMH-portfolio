@@ -81,7 +81,7 @@ const AdminLayout = () => {
         <div className="h-16 flex items-center justify-center border-b border-gray-200 dark:border-gray-700 px-4">
           <Link to="/admin" className="flex items-center gap-2 text-lg font-bold">
             <span className="text-amber-500">&lt;</span>
-            {!collapsed && <span>CMS</span>}
+            {!collapsed && <span>YMH</span>}
             <span className="text-amber-500">/&gt;</span>
           </Link>
         </div>
@@ -139,7 +139,7 @@ const AdminLayout = () => {
             </button>
             <div>
               <p className="text-xs text-gray-400 hidden sm:block">Admin Panel</p>
-              <h1 className="text-sm font-semibold">{currentPage}</h1>
+              <h1 className="text-black font-semibold">{currentPage}</h1>
             </div>
           </div>
 
@@ -229,7 +229,7 @@ const SessionExpiredModal = () => {
         <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
           <FiLogOut className="w-6 h-6 text-amber-600" />
         </div>
-        <h3 className="text-lg font-bold mb-2">Session Expired</h3>
+        <h3 className="text-black font-bold mb-2">Session Expired</h3>
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
           Your session has expired. Please log in again to continue.
         </p>

@@ -99,7 +99,7 @@ const DashboardPage = () => {
         {/* Activity Feed */}
         <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
           <div className="p-4 border-b border-gray-100 dark:border-gray-700">
-            <h2 className="text-sm font-semibold">Recent Activity</h2>
+            <h2 className="text-black font-semibold">Recent Activity</h2>
           </div>
           <div className="divide-y divide-gray-100 dark:divide-gray-700 max-h-96 overflow-y-auto">
             {activities.length === 0 ? (
@@ -132,7 +132,7 @@ const DashboardPage = () => {
         <div className="space-y-6">
           {/* Quick Actions */}
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
-            <h2 className="text-sm font-semibold mb-3">Quick Actions</h2>
+            <h2 className="text-black font-semibold mb-3">Quick Actions</h2>
             <div className="grid grid-cols-2 gap-2">
               {quickActions.map((action) => (
                 <Link
@@ -151,7 +151,7 @@ const DashboardPage = () => {
 
           {/* Content Health */}
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
-            <h2 className="text-sm font-semibold mb-3">Content Health</h2>
+            <h2 className="text-black font-semibold mb-3">Content Health</h2>
             <ul className="space-y-2">
               {healthChecks.map((check, i) => (
                 <li key={i}>

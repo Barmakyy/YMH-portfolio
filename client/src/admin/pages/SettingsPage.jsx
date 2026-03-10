@@ -91,7 +91,7 @@ const InputField = ({ label, value, onChange, type = 'text', placeholder = '', .
 
 const ProfileTab = ({ settings, updateField }) => (
   <div className="space-y-4">
-    <h2 className="text-lg font-semibold mb-2">Profile</h2>
+    <h2 className="text-black font-semibold mb-2">Profile</h2>
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <InputField label="Full Name" value={settings.fullName} onChange={(v) => updateField('fullName', v)} />
       <InputField label="Job Title" value={settings.jobTitle} onChange={(v) => updateField('jobTitle', v)} />
@@ -110,7 +110,7 @@ const ProfileTab = ({ settings, updateField }) => (
 
 const AppearanceTab = ({ settings, updateField }) => (
   <div className="space-y-4">
-    <h2 className="text-lg font-semibold mb-2">Appearance</h2>
+    <h2 className="text-black font-semibold mb-2">Appearance</h2>
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
         <label className="block text-sm font-medium mb-1">Accent Color</label>
@@ -138,7 +138,7 @@ const AppearanceTab = ({ settings, updateField }) => (
 
 const ResumeTab = ({ settings, updateField }) => (
   <div className="space-y-4">
-    <h2 className="text-lg font-semibold mb-2">Resume</h2>
+    <h2 className="text-black font-semibold mb-2">Resume</h2>
     <InputField label="Resume PDF URL" value={settings.resumeUrl} onChange={(v) => updateField('resumeUrl', v)} type="url" placeholder="Upload via Media Library, then paste URL here" />
     {settings.resumeUrl && (
       <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
@@ -150,7 +150,7 @@ const ResumeTab = ({ settings, updateField }) => (
 
 const AvailabilityTab = ({ settings, updateField }) => (
   <div className="space-y-4">
-    <h2 className="text-lg font-semibold mb-2">Availability</h2>
+    <h2 className="text-black font-semibold mb-2">Availability</h2>
     <div>
       <label className="block text-sm font-medium mb-1">Status</label>
       <select value={settings.availabilityStatus} onChange={(e) => updateField('availabilityStatus', e.target.value)}
@@ -193,7 +193,7 @@ const TestimonialsTab = ({ settings, setSettings }) => {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Testimonials</h2>
+        <h2 className="text-black font-semibold">Testimonials</h2>
         <button onClick={addTestimonial} className="text-amber-500 text-sm hover:underline flex items-center gap-1">
           <FiPlus className="w-3 h-3" /> Add
         </button>
@@ -244,7 +244,7 @@ const TestimonialForm = ({ testimonial, onSave, onCancel }) => {
 
 const IntegrationsTab = ({ settings, updateField }) => (
   <div className="space-y-4">
-    <h2 className="text-lg font-semibold mb-2">Integrations</h2>
+    <h2 className="text-black font-semibold mb-2">Integrations</h2>
     <div className="space-y-4">
       <InputField label="Google Analytics Measurement ID" value={settings.googleAnalyticsId} onChange={(v) => updateField('googleAnalyticsId', v)} placeholder="G-XXXXXXXXXX" />
       <InputField label="Plausible Domain" value={settings.plausibleDomain} onChange={(v) => updateField('plausibleDomain', v)} placeholder="yourdomain.com" />
@@ -282,7 +282,7 @@ const SecurityTab = () => {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-semibold mb-2">Security</h2>
+      <h2 className="text-black font-semibold mb-2">Security</h2>
       <div className="max-w-md space-y-4">
         <InputField label="Current Password" value={currentPassword} onChange={setCurrentPassword} type="password" />
         <InputField label="New Password" value={newPassword} onChange={setNewPassword} type="password" placeholder="Min 8 characters" />

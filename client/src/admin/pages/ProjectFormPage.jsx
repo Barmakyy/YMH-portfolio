@@ -151,7 +151,7 @@ const ProjectFormPage = () => {
 
       {/* Basic Info */}
       <section className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
-        <h2 className="text-lg font-semibold">Basic Info</h2>
+        <h2 className="text-black font-semibold">Basic Info</h2>
         <div>
           <label className="block text-sm font-medium mb-1">Title *</label>
           <input

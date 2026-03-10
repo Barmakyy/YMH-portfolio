@@ -3,10 +3,14 @@ import { motion, useInView } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import axios from 'axios';
 import { FiMail, FiMapPin, FiClock, FiGithub, FiLinkedin, FiTwitter, FiSend, FiCheck, FiMessageSquare, FiUser, FiArrowRight } from 'react-icons/fi';
+import { FaWhatsapp, FaInstagram } from 'react-icons/fa';
 import { HiOutlineSparkles, HiOutlineLightningBolt } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 import { Button, Input, Textarea, Select, Badge, Card } from '../components/ui';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(100),
@@ -45,6 +49,8 @@ const socialLinks = [
   { name: 'GitHub', icon: FiGithub, href: import.meta.env.VITE_GITHUB_URL, username: 'Barmakyy' },
   { name: 'LinkedIn', icon: FiLinkedin, href: import.meta.env.VITE_LINKEDIN_URL, username: import.meta.env.VITE_SITE_NAME },
   { name: 'Twitter', icon: FiTwitter, href: import.meta.env.VITE_TWITTER_URL, username: '@barmakyy' },
+  { name: 'WhatsApp', icon: FaWhatsapp, href: import.meta.env.VITE_WHATSAPP_URL, username: 'Chat with me' },
+  { name: 'Instagram', icon: FaInstagram, href: import.meta.env.VITE_INSTAGRAM_URL, username: '@barmakyy' },
 ];
 
 const contactStats = [
@@ -57,6 +63,7 @@ const contactStats = [
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const headerRef = useRef(null);
   const isHeaderInView = useInView(headerRef, { once: true });
 
@@ -86,19 +93,18 @@ const Contact = () => {
     if (data.honeypot) return;
 
     setIsSubmitting(true);
+    setSubmitError('');
     
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    
-    console.log('Form data:', data);
-    setIsSubmitting(false);
-    setIsSuccess(true);
-    
-    // Reset after showing success
-    setTimeout(() => {
+    try {
+      await axios.post(`${API_URL}/messages`, data);
+      setIsSuccess(true);
       reset();
-      setIsSuccess(false);
-    }, 5000);
+      setTimeout(() => setIsSuccess(false), 5000);
+    } catch (err) {
+      setSubmitError(err.response?.data?.message || 'Failed to send message. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -194,6 +200,11 @@ const Contact = () => {
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                  {submitError && (
+                    <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-500 text-sm">
+                      {submitError}
+                    </div>
+                  )}
                   {/* Honeypot - hidden from real users */}
                   <input
                     type="text"

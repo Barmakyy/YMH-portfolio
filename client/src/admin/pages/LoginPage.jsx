@@ -52,7 +52,7 @@ const LoginPage = () => {
 
         {/* Login Card */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8">
-          <h2 className="text-xl font-bold mb-6">Sign In</h2>
+          <h2 className="text-xl font-bold mb-6 text-gray-900 dark:text-white">Sign In</h2>
 
           {error && (
             <motion.div
@@ -68,7 +68,7 @@ const LoginPage = () => {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium mb-1.5">Email</label>
+              <label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-200">Email</label>
               <div className="relative">
                 <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
@@ -77,14 +77,14 @@ const LoginPage = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   placeholder="admin@example.com"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition placeholder:text-gray-400"
                 />
               </div>
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium mb-1.5">Password</label>
+              <label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-200">Password</label>
               <div className="relative">
                 <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
@@ -93,7 +93,7 @@ const LoginPage = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-10 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition placeholder:text-gray-400"
                 />
                 <button
                   type="button"
