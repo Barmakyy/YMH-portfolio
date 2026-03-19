@@ -147,13 +147,18 @@ const ExperiencePage = () => {
 
 const ExperienceFormModal = ({ data, onSave, onClose }) => {
   const isWork = data.type === 'work';
+  const { startDate: rawStartDate, endDate: rawEndDate, ...entryRest } = data.entry || {};
+  // Ensure the keys that are explicitly set later are not in entryRest
+  delete entryRest.startDate;
+  delete entryRest.endDate;
+
   const [form, setForm] = useState({
     company: '', jobTitle: '', employmentType: '', institution: '', degree: '', fieldOfStudy: '',
     startDate: '', endDate: '', present: false, location: '', description: '', technologies: [],
     logo: '', websiteUrl: '', relevantCoursework: [],
-    ...data.entry,
-    startDate: data.entry?.startDate?.slice(0, 10) || '',
-    endDate: data.entry?.endDate?.slice(0, 10) || '',
+    ...entryRest,
+    startDate: rawStartDate?.slice(0, 10) || '',
+    endDate: rawEndDate?.slice(0, 10) || '',
   });
   const [techInput, setTechInput] = useState('');
 
@@ -225,9 +230,16 @@ const ExperienceFormModal = ({ data, onSave, onClose }) => {
 };
 
 const CertFormModal = ({ data, onSave, onClose }) => {
+  const { issueDate: rawIssueDate, expiryDate: rawExpiryDate, ...dataRest } = data || {};
+  // Ensure the keys that are explicitly set later are not in dataRest
+  delete dataRest.issueDate;
+  delete dataRest.expiryDate;
+
   const [form, setForm] = useState({
     name: '', organization: '', issueDate: '', expiryDate: '', credentialUrl: '',
-    ...data, issueDate: data.issueDate?.slice(0, 10) || '', expiryDate: data.expiryDate?.slice(0, 10) || '',
+    ...dataRest,
+    issueDate: rawIssueDate?.slice(0, 10) || '',
+    expiryDate: rawExpiryDate?.slice(0, 10) || '',
   });
 
   return (
