@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: portfolio-backend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        fromDatabase:
+          name: portfolio-db
+          property: connectionString
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES_IN
+        value: 8h
+      - key: JWT_COOKIE_EXPIRES_IN
+        value: 8
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: CLIENT_URL
+        sync: false
+      - key: LOGIN_RATE_LIMIT_MAX
+        value: "5"
+      - key: LOGIN_RATE_LIMIT_WINDOW_MS
+        value: "900000"
+
+databases:
+  - name: portfolio-db
+    databaseName: YMH-Portfolio
+    plan: free
+    region: oregon
+    ipAllowList: []

@@ -7,7 +7,6 @@ import {
   uploadMultipleMedia,
   updateMedia,
   deleteMedia,
-  getCloudinarySignature,
 } from '../controllers/mediaController.js';
 import { protect } from '../middleware/auth.js';
 
@@ -29,7 +28,6 @@ const router = Router();
 // All media routes are protected
 router.use(protect);
 router.get('/', getAllMedia);
-router.get('/cloudinary-signature', getCloudinarySignature);
 router.get('/:id', getMedia);
 router.post('/upload', upload.single('file'), uploadMedia);
 router.post('/upload-multiple', upload.array('files', 20), uploadMultipleMedia);

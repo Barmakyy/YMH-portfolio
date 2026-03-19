@@ -74,21 +74,21 @@ const ProjectsListPage = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">Projects</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{projects.length} total projects</p>
+          <h1 className="text-xl sm:text-2xl font-bold">Projects</h1>
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">{projects.length} total projects</p>
         </div>
         <Link
           to="/admin/projects/new"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 text-white text-sm font-semibold rounded-lg hover:bg-amber-600 transition-colors"
+          className="inline-flex items-center justify-center sm:justify-start gap-2 px-4 py-2 bg-amber-500 text-white text-sm font-semibold rounded-lg hover:bg-amber-600 transition-colors"
         >
           <FiPlus className="w-4 h-4" /> New Project
         </Link>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col gap-3">
         <div className="relative flex-1">
           <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input

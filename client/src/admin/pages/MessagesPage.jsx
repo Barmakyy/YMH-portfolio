@@ -76,9 +76,9 @@ const MessagesPage = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Messages</h1>
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <h1 className="text-xl sm:text-2xl font-bold">Messages</h1>
+        <div className="flex items-center gap-2 flex-wrap">
           {selectedIds.length > 0 && (
             <>
               <button onClick={handleBulkRead} className="px-3 py-1.5 text-xs rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700">Mark Read</button>
@@ -96,7 +96,7 @@ const MessagesPage = () => {
         </div>
       </div>
 
-      <div className="flex gap-6 min-h-[500px]">
+      <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 min-h-[400px] lg:min-h-[500px]">
         {/* Message List */}
         <div className="w-full lg:w-1/2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
           {messages.length === 0 ? (

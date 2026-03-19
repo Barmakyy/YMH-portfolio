@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { FiArrowLeft, FiCalendar, FiClock, FiEye, FiTag } from 'react-icons/fi';
 import { Badge, Button } from '../components/ui';
 import axios from 'axios';
+import { useAnalytics } from '../hooks/useAnalytics';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -20,13 +21,17 @@ const BlogDetail = () => {
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const { trackBlogView } = useAnalytics();
 
   useEffect(() => {
     axios.get(`${API_URL}/blog/public/${slug}`)
-      .then(({ data }) => setPost(data.data))
+      .then(({ data }) => {
+        setPost(data.data);
+        trackBlogView(slug, data.data.title);
+      })
       .catch(() => setError(true))
       .finally(() => setLoading(false));
-  }, [slug]);
+  }, [slug]); // Only depend on slug, trackBlogView is stable
 
   if (loading) {
     return (

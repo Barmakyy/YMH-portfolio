@@ -12,7 +12,9 @@ import {
   SiGraphql, SiFigma, SiPython, SiAmazon, SiHtml5, SiCss3
 } from 'react-icons/si';
 import { Button, Avatar, Badge, Card } from '../components/ui';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
+import { useAnalytics } from '../hooks/useAnalytics';
+import axios from 'axios';
 
 const stats = [
   { label: 'Year Experience', value: 1, icon: HiOutlineCalendar, color: 'bg-neutral-800 text-accent' },
@@ -264,6 +266,48 @@ const StatCard = ({ stat, index }) => {
 };
 
 const About = () => {
+  const { trackLinkClick, trackDownload } = useAnalytics();
+  const [resumeUrl, setResumeUrl] = useState('');
+
+  useEffect(() => {
+    // Fetch settings to get resume URL
+    const fetchSettings = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/settings/public`);
+        if (response.data.data?.resumeUrl) {
+          setResumeUrl(response.data.data.resumeUrl);
+        }
+      } catch (error) {
+        console.warn('Failed to fetch resume URL:', error);
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  const handleSocialClick = useCallback((socialName, url) => {
+    trackLinkClick(socialName.toLowerCase(), url);
+  }, [trackLinkClick]);
+
+  const handleResumeClick = useCallback(() => {
+    if (resumeUrl) {
+      trackDownload('cv');
+      // Construct full URL for resume download (without /api prefix)
+      const serverUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+      const fullUrl = resumeUrl.startsWith('http') 
+        ? resumeUrl 
+        : `${serverUrl}${resumeUrl}`;
+      
+      // Open in new tab to bypass React Router
+      const link = document.createElement('a');
+      link.href = fullUrl;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }, [resumeUrl, trackDownload]);
+
   return (
     <div className="relative overflow-hidden">
       {/* Hero Section with Floating Shapes */}
@@ -359,7 +403,7 @@ const About = () => {
 
               <div className="flex flex-wrap gap-4">
                 <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
-                  <Button className="group px-8">
+                  <Button className="group px-8" onClick={handleResumeClick} disabled={!resumeUrl}>
                     <FiDownload className="w-5 h-5 group-hover:animate-bounce" />
                     Download Résumé
                   </Button>
@@ -866,6 +910,7 @@ const About = () => {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => handleSocialClick(social.name, social.href)}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}

@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { FiArrowRight, FiExternalLink, FiGithub } from 'react-icons/fi';
 import { Card, Badge } from '../ui';
 import axios from 'axios';
+import { useAnalytics } from '../../hooks/useAnalytics';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -23,6 +24,11 @@ const itemVariants = {
 const FeaturedProjects = () => {
   const [featuredProjects, setFeaturedProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { trackLinkClick } = useAnalytics();
+
+  const handleLinkClick = useCallback((linkType, projectTitle) => {
+    trackLinkClick(linkType, projectTitle);
+  }, [trackLinkClick]);
 
   useEffect(() => {
     axios.get(`${API_URL}/projects/public`)
@@ -118,6 +124,7 @@ const FeaturedProjects = () => {
                       href={project.liveUrl}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => handleLinkClick('demo', project.title)}
                       className="flex items-center gap-1 text-sm text-text-secondary hover:text-accent transition-colors"
                     >
                       <FiExternalLink size={16} />
@@ -129,6 +136,7 @@ const FeaturedProjects = () => {
                       href={project.githubUrl}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => handleLinkClick('github', project.title)}
                       className="flex items-center gap-1 text-sm text-text-secondary hover:text-accent transition-colors"
                     >
                       <FiGithub size={16} />

@@ -46,25 +46,27 @@ const SettingsPage = () => {
   if (!settings) return <div className="text-center py-12 text-gray-400">Failed to load settings.</div>;
 
   return (
-    <div className="space-y-6 max-w-4xl">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Settings</h1>
+    <div className="space-y-6 max-w-4xl mx-auto px-0">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
+        <h1 className="text-xl sm:text-2xl font-bold">Settings</h1>
         <button onClick={saveSettings} disabled={saving}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 text-white text-sm font-semibold rounded-lg hover:bg-amber-600 disabled:opacity-50">
+          className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 text-white text-sm font-semibold rounded-lg hover:bg-amber-600 disabled:opacity-50 w-full sm:w-auto justify-center sm:justify-start">
           <FiSave className="w-4 h-4" /> {saving ? 'Saving...' : 'Save Changes'}
         </button>
       </div>
 
       {/* Tabs */}
-      <div className="flex overflow-x-auto border-b border-gray-200 dark:border-gray-700 gap-1">
-        {tabs.map((tab) => (
-          <button key={tab.key} onClick={() => setActiveTab(tab.key)}
-            className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors ${
+      <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex gap-1">
+          {tabs.map((tab) => (
+            <button key={tab.key} onClick={() => setActiveTab(tab.key)}
+              className={`flex items-center gap-2 px-3 sm:px-4 py-3 text-xs sm:text-sm font-medium border-b-2 whitespace-nowrap transition-colors ${
               activeTab === tab.key ? 'border-amber-500 text-amber-600' : 'border-transparent text-gray-500 hover:text-gray-700'
             }`}>
-            <tab.icon className="w-4 h-4" /> {tab.label}
-          </button>
-        ))}
+              <tab.icon className="w-4 h-4" /> {tab.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Tab Content */}
@@ -91,8 +93,8 @@ const InputField = ({ label, value, onChange, type = 'text', placeholder = '', .
 
 const ProfileTab = ({ settings, updateField }) => (
   <div className="space-y-4">
-    <h2 className="text-black font-semibold mb-2">Profile</h2>
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <h2 className="text-black dark:text-white font-semibold mb-4">Profile</h2>
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
       <InputField label="Full Name" value={settings.fullName} onChange={(v) => updateField('fullName', v)} />
       <InputField label="Job Title" value={settings.jobTitle} onChange={(v) => updateField('jobTitle', v)} />
       <InputField label="Email" value={settings.email} onChange={(v) => updateField('email', v)} type="email" />
@@ -136,17 +138,27 @@ const AppearanceTab = ({ settings, updateField }) => (
   </div>
 );
 
-const ResumeTab = ({ settings, updateField }) => (
-  <div className="space-y-4">
-    <h2 className="text-black font-semibold mb-2">Resume</h2>
-    <InputField label="Resume PDF URL" value={settings.resumeUrl} onChange={(v) => updateField('resumeUrl', v)} type="url" placeholder="Upload via Media Library, then paste URL here" />
-    {settings.resumeUrl && (
-      <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-        <iframe src={settings.resumeUrl} className="w-full h-96" title="Resume Preview" />
-      </div>
-    )}
-  </div>
-);
+const ResumeTab = ({ settings, updateField }) => {
+  // Convert relative URL to absolute URL for iframe
+  const getResumeUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    const serverUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+    return `${serverUrl}${url}`;
+  };
+
+  return (
+    <div className="space-y-4">
+      <h2 className="text-black font-semibold mb-2">Resume</h2>
+      <InputField label="Resume PDF URL" value={settings.resumeUrl} onChange={(v) => updateField('resumeUrl', v)} type="url" placeholder="Upload via Media Library, then paste URL here" />
+      {settings.resumeUrl && (
+        <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+          <iframe src={getResumeUrl(settings.resumeUrl)} className="w-full h-96" title="Resume Preview" />
+        </div>
+      )}
+    </div>
+  );
+};
 
 const AvailabilityTab = ({ settings, updateField }) => (
   <div className="space-y-4">
@@ -246,8 +258,11 @@ const IntegrationsTab = ({ settings, updateField }) => (
   <div className="space-y-4">
     <h2 className="text-black font-semibold mb-2">Integrations</h2>
     <div className="space-y-4">
-      <InputField label="Google Analytics Measurement ID" value={settings.googleAnalyticsId} onChange={(v) => updateField('googleAnalyticsId', v)} placeholder="G-XXXXXXXXXX" />
-      <InputField label="Plausible Domain" value={settings.plausibleDomain} onChange={(v) => updateField('plausibleDomain', v)} placeholder="yourdomain.com" />
+      <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+        <p className="text-sm text-blue-900 dark:text-blue-200">
+          <strong>📊 Analytics:</strong> Custom analytics are now built-in! Visit the Analytics dashboard to view your site's page views and visitor data.
+        </p>
+      </div>
       <InputField label="GitHub Username" value={settings.githubUsername} onChange={(v) => updateField('githubUsername', v)} />
       <InputField label="Calendly / Cal.com URL" value={settings.calendlyUrl} onChange={(v) => updateField('calendlyUrl', v)} type="url" />
       <div className="border-t border-gray-200 dark:border-gray-700 pt-4">

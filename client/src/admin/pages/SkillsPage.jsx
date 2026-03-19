@@ -69,18 +69,18 @@ const SkillsPage = () => {
   if (loading) return <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500" /></div>;
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-4xl mx-auto px-0">
       <div>
-        <h1 className="text-2xl font-bold">Skills Manager</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage skill categories and individual skills</p>
+        <h1 className="text-xl sm:text-2xl font-bold">Skills Manager</h1>
+        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">Manage skill categories and individual skills</p>
       </div>
 
       {/* Add Category */}
-      <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row gap-2">
         <input type="text" value={newCatName} onChange={(e) => setNewCatName(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && addCategory()} placeholder="New category name..."
           className="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm focus:ring-2 focus:ring-amber-500 outline-none" />
-        <button onClick={addCategory} className="px-4 py-2 bg-amber-500 text-white text-sm font-semibold rounded-lg hover:bg-amber-600">
+        <button onClick={addCategory} className="px-4 py-2 bg-amber-500 text-white text-sm font-semibold rounded-lg hover:bg-amber-600 w-full sm:w-auto">
           <FiPlus className="w-4 h-4 inline mr-1" /> Add Category
         </button>
       </div>

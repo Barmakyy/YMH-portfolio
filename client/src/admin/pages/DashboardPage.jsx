@@ -53,14 +53,14 @@ const DashboardPage = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Welcome back! Here&apos;s your site overview.</p>
+        <h1 className="text-xl sm:text-2xl font-bold">Dashboard</h1>
+        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">Welcome back! Here&apos;s your site overview.</p>
       </div>
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
         {statCards.map((card, i) => (
           <motion.div
             key={card.label}
@@ -95,7 +95,7 @@ const DashboardPage = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Activity Feed */}
         <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
           <div className="p-4 border-b border-gray-100 dark:border-gray-700">

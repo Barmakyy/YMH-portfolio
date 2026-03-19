@@ -9,6 +9,7 @@ import { FaWhatsapp, FaInstagram } from 'react-icons/fa';
 import { HiOutlineSparkles, HiOutlineLightningBolt } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 import { Button, Input, Textarea, Select, Badge, Card } from '../components/ui';
+import { useAnalytics } from '../hooks/useAnalytics';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -66,6 +67,7 @@ const Contact = () => {
   const [submitError, setSubmitError] = useState('');
   const headerRef = useRef(null);
   const isHeaderInView = useInView(headerRef, { once: true });
+  const { trackLinkClick } = useAnalytics();
 
   const {
     register,
@@ -369,6 +371,7 @@ const Contact = () => {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => trackLinkClick(social.name.toLowerCase(), social.href)}
                     className="flex items-center gap-3 p-3 bg-bg-tertiary rounded-lg hover:bg-border transition-colors group"
                   >
                     <social.icon size={20} className="text-text-secondary group-hover:text-accent transition-colors" />

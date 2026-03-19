@@ -5,6 +5,8 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import connectDB from './config/db.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
@@ -18,16 +20,42 @@ import mediaRoutes from './routes/mediaRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
 import settingsRoutes from './routes/settingsRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
+import analyticsRoutes from './routes/analyticsRoutes.js';
+import fs from 'fs';
 
 const app = express();
 
 // Connect to MongoDB
 connectDB();
 
+// Set up absolute path for uploads directory
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const uploadsPath = path.join(__dirname, '../uploads');
+
+// Create uploads directory if it doesn't exist
+if (!fs.existsSync(uploadsPath)) {
+  fs.mkdirSync(uploadsPath, { recursive: true });
+  console.log(`Created uploads directory at: ${uploadsPath}`);
+}
+
 // Global middleware
-app.use(helmet());
+const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", 'data:', 'https:'],
+      connectSrc: ["'self'", clientUrl],
+      frameSrc: ["'self'", clientUrl],
+      frameAncestors: ["'self'", clientUrl],
+    },
+  },
+}));
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: clientUrl,
   credentials: true,
 }));
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
@@ -56,6 +84,9 @@ const apiLimiter = rateLimit({
 app.use('/api', apiLimiter);
 app.use('/api/auth/login', authLimiter);
 
+// Serve uploaded files as static assets (MUST be before routes)
+app.use('/uploads', express.static(uploadsPath));
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
@@ -65,6 +96,7 @@ app.use('/api/experience', experienceRoutes);
 app.use('/api/media', mediaRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/analytics', analyticsRoutes);
 app.use('/api/admin/dashboard', dashboardRoutes);
 
 // Health check
@@ -72,9 +104,13 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// 404 handler
-app.all('/{*splat}', (req, res) => {
-  res.status(404).json({ message: `Route ${req.originalUrl} not found.` });
+// 404 handler (exclude static files)
+app.use((req, res) => {
+  if (!req.path.startsWith('/uploads') && !req.path.startsWith('/api')) {
+    res.status(404).json({ message: `Route ${req.originalUrl} not found.` });
+  } else {
+    res.status(404).json({ message: `Route ${req.originalUrl} not found.` });
+  }
 });
 
 // Global error handler

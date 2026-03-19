@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiExternalLink, FiGithub, FiArrowLeft, FiArrowRight, FiCalendar, FiUsers, FiTag } from 'react-icons/fi';
 import { Badge, Button, Card } from '../components/ui';
+import { useAnalytics } from '../hooks/useAnalytics';
 import { 
   SiReact, SiNodedotjs, SiMongodb, SiExpress, SiStripe, SiRedux,
   SiTailwindcss, SiSocketdotio, SiJavascript
@@ -27,16 +28,23 @@ const techIcons = {
 
 const ProjectDetail = () => {
   const { slug } = useParams();
+  const { trackProjectView, trackLinkClick } = useAnalytics();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
   useEffect(() => {
     axios.get(`${API_URL}/projects/public/${slug}`)
-      .then(({ data }) => setProject(data.data))
+      .then(({ data }) => {
+        setProject(data.data);
+        // Track project view
+        if (data.data) {
+          trackProjectView(data.data.slug, data.data.title);
+        }
+      })
       .catch(() => setError(true))
       .finally(() => setLoading(false));
-  }, [slug]);
+  }, [slug]); // Only depend on slug, trackProjectView is stable
 
   if (loading) {
     return (
@@ -116,7 +124,12 @@ const ProjectDetail = () => {
           <div className="flex flex-wrap gap-4">
             {project.liveUrl && (
               <Button asChild>
-                <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+                <a 
+                  href={project.liveUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  onClick={() => trackLinkClick('project-demo', project.liveUrl)}
+                >
                   <FiExternalLink />
                   Live Demo
                 </a>
@@ -124,7 +137,12 @@ const ProjectDetail = () => {
             )}
             {project.githubUrl && (
               <Button variant="secondary" asChild>
-                <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                <a 
+                  href={project.githubUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  onClick={() => trackLinkClick('github', project.githubUrl)}
+                >
                   <FiGithub />
                   View on GitHub
                 </a>

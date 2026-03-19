@@ -12,6 +12,14 @@ const MediaPage = () => {
   const [copied, setCopied] = useState(false);
   const fileRef = useRef(null);
 
+  // Helper to convert relative URLs to absolute
+  const getAbsoluteUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    const serverUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+    return `${serverUrl}${url}`;
+  };
+
   const fetchMedia = async () => {
     try {
       const params = {};
@@ -48,7 +56,7 @@ const MediaPage = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm('Delete this file? It will also be removed from Cloudinary.')) return;
+    if (!confirm('Delete this file?')) return;
     try {
       await api.delete(`/media/${id}`);
       setMedia((prev) => prev.filter((m) => m._id !== id));
@@ -65,7 +73,7 @@ const MediaPage = () => {
   };
 
   const copyUrl = (url) => {
-    navigator.clipboard.writeText(url);
+    navigator.clipboard.writeText(getAbsoluteUrl(url));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -78,10 +86,10 @@ const MediaPage = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Media Library</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <h1 className="text-xl sm:text-2xl font-bold">Media Library</h1>
         <button onClick={() => fileRef.current?.click()}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 text-white text-sm font-semibold rounded-lg hover:bg-amber-600">
+          className="inline-flex items-center justify-center sm:justify-start gap-2 px-4 py-2 bg-amber-500 text-white text-sm font-semibold rounded-lg hover:bg-amber-600">
           <FiUpload className="w-4 h-4" /> Upload
         </button>
         <input ref={fileRef} type="file" multiple accept="image/*,.pdf,.svg" className="hidden"
@@ -92,7 +100,7 @@ const MediaPage = () => {
       <div
         onDragOver={(e) => e.preventDefault()}
         onDrop={handleDrop}
-        className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-8 text-center hover:border-amber-400 transition-colors"
+        className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-6 sm:p-8 text-center hover:border-amber-400 transition-colors"
       >
         {uploading ? (
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500 mx-auto" />
@@ -112,9 +120,9 @@ const MediaPage = () => {
           className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm focus:ring-2 focus:ring-amber-500 outline-none" />
       </div>
 
-      <div className="flex gap-6">
+      <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
         {/* Grid */}
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           {loading ? (
             <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500" /></div>
           ) : media.length === 0 ? (
@@ -130,7 +138,7 @@ const MediaPage = () => {
                   }`}
                 >
                   {item.fileType === 'image' ? (
-                    <img src={item.url} alt={item.altText} className="w-full h-full object-cover" />
+                    <img src={getAbsoluteUrl(item.url)} alt={item.altText} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
                       <span className="text-xs text-gray-400 uppercase">{item.format}</span>
@@ -159,7 +167,7 @@ const MediaPage = () => {
                 <button onClick={() => setSelected(null)} className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"><FiX className="w-4 h-4" /></button>
               </div>
               {selected.fileType === 'image' ? (
-                <img src={selected.url} alt="" className="w-full rounded-lg" />
+                <img src={getAbsoluteUrl(selected.url)} alt="" className="w-full rounded-lg" />
               ) : (
                 <div className="w-full h-32 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center"><span className="text-gray-400 uppercase">{selected.format}</span></div>
               )}

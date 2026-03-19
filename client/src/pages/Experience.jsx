@@ -1,9 +1,11 @@
 import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import { FiDownload, FiExternalLink, FiMapPin, FiCalendar, FiArrowRight, FiBookOpen, FiAward, FiBriefcase } from 'react-icons/fi';
 import { HiOutlineSparkles, HiOutlineAcademicCap, HiOutlineBadgeCheck } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 import { Badge, Button, Card } from '../components/ui';
+import { useAnalytics } from '../hooks/useAnalytics';
+import axios from 'axios';
 
 // Mock data - will be replaced with API data
 const workExperience = [
@@ -100,6 +102,43 @@ const experienceStats = [
 const Experience = () => {
   const headerRef = useRef(null);
   const isHeaderInView = useInView(headerRef, { once: true });
+  const { trackLinkClick, trackDownload } = useAnalytics();
+  const [resumeUrl, setResumeUrl] = useState('');
+
+  useEffect(() => {
+    // Fetch settings to get resume URL
+    const fetchSettings = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/settings/public`);
+        if (response.data.data?.resumeUrl) {
+          setResumeUrl(response.data.data.resumeUrl);
+        }
+      } catch (error) {
+        console.warn('Failed to fetch resume URL:', error);
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  const handleResumeClick = useCallback(() => {
+    if (resumeUrl) {
+      trackDownload('cv');
+      // Construct full URL for resume download (without /api prefix)
+      const serverUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+      const fullUrl = resumeUrl.startsWith('http') 
+        ? resumeUrl 
+        : `${serverUrl}${resumeUrl}`;
+      
+      // Open in new tab to bypass React Router
+      const link = document.createElement('a');
+      link.href = fullUrl;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }, [resumeUrl, trackDownload]);
 
   return (
     <div className="min-h-screen">
@@ -369,7 +408,7 @@ const Experience = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
-              <Button size="lg" className="group px-10 py-4 text-base">
+              <Button size="lg" className="group px-10 py-4 text-base" onClick={handleResumeClick} disabled={!resumeUrl}>
                 <FiDownload className="w-5 h-5 group-hover:animate-bounce" />
                 Download Résumé
               </Button>

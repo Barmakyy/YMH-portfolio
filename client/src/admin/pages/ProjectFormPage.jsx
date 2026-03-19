@@ -110,25 +110,25 @@ const ProjectFormPage = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Sticky Save Bar */}
-      <div className="sticky top-16 z-20 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md -mx-4 px-4 py-3 lg:-mx-6 lg:px-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between gap-4">
+      <div className="sticky top-16 z-20 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md -mx-4 px-3 sm:px-4 py-2 sm:py-3 lg:-mx-6 lg:px-6 border-b border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
         <button
           onClick={() => navigate('/admin/projects')}
-          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+          className="flex items-center gap-1.5 text-xs sm:text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 w-fit"
         >
           <FiArrowLeft className="w-4 h-4" /> Back
         </button>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
           <button
             onClick={() => handleSave('draft')}
             disabled={saving}
-            className="px-4 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
+            className="flex-1 sm:flex-none px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
           >
             <FiSave className="w-4 h-4 inline mr-1.5" /> Save Draft
           </button>
           <button
             onClick={() => handleSave(form.status === 'published' ? 'draft' : 'published')}
             disabled={saving}
-            className="px-4 py-2 text-sm rounded-lg bg-amber-500 text-white hover:bg-amber-600 transition-colors disabled:opacity-50"
+            className="flex-1 sm:flex-none px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg bg-amber-500 text-white hover:bg-amber-600 transition-colors disabled:opacity-50"
           >
             <FiSend className="w-4 h-4 inline mr-1.5" />
             {form.status === 'published' ? 'Unpublish' : 'Publish'}
@@ -141,7 +141,7 @@ const ProjectFormPage = () => {
                   navigate('/admin/projects');
                 }
               }}
-              className="px-3 py-2 text-sm rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+              className="px-2 sm:px-3 py-2 text-xs sm:text-sm rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
             >
               <FiTrash2 className="w-4 h-4" />
             </button>
