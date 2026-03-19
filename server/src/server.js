@@ -99,6 +99,27 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/admin/dashboard', dashboardRoutes);
 
+// API root endpoint
+app.get('/api', (req, res) => {
+  res.status(200).json({ 
+    message: 'Portfolio API',
+    version: '1.0',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      projects: '/api/projects',
+      blog: '/api/blog',
+      skills: '/api/skills',
+      experience: '/api/experience',
+      media: '/api/media',
+      messages: '/api/messages',
+      settings: '/api/settings',
+      analytics: '/api/analytics',
+      dashboard: '/api/admin/dashboard'
+    }
+  });
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
