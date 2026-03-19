@@ -40,7 +40,7 @@ if (!fs.existsSync(uploadsPath)) {
 }
 
 // Global middleware
-const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+const clientUrl = (process.env.CLIENT_URL || 'http://localhost:5173').replace(/\/$/, ''); // Remove trailing slash
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
@@ -55,7 +55,7 @@ app.use(helmet({
   },
 }));
 app.use(cors({
-  origin: clientUrl,
+  origin: [clientUrl, clientUrl + '/'], // Accept both with and without trailing slash
   credentials: true,
 }));
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
