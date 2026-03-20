@@ -48,7 +48,7 @@ export const sendTokenResponse = (admin, statusCode, res, rememberMe = false) =>
     ),
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    sameSite: 'none', // 'none' for cross-site requests (requires secure: true)
   };
 
   res.cookie('jwt', token, cookieOptions);
