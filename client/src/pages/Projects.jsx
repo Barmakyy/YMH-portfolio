@@ -97,10 +97,10 @@ const Projects = () => {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen text-center bg-white dark:bg-bg-primary">
+      <div className="flex flex-col items-center justify-center h-screen text-center bg-bg-primary">
         <FiAlertCircle className="w-16 h-16 text-red-500 mb-4" />
-        <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">Error Loading Projects</h2>
-        <p className="text-gray-700 dark:text-text-secondary">{error.message}</p>
+        <h2 className="text-2xl font-bold mb-2 text-text-primary">Error Loading Projects</h2>
+        <p className="text-text-secondary">{error.message}</p>
       </div>
     );
   }
@@ -151,11 +151,11 @@ const Projects = () => {
               My Work
             </motion.div>
             
-            <h1 className="text-4xl sm:text-5xl font-bold mb-4 text-gray-900 dark:text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
+            <h1 className="text-4xl sm:text-5xl font-bold mb-4 text-text-primary drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
               Projects I've <span className="text-accent">Built</span>
             </h1>
             
-            <p className="text-gray-700 dark:text-gray-200 max-w-2xl mx-auto mb-8 drop-shadow-[0_1px_4px_rgba(0,0,0,0.4)]">
+            <p className="text-text-secondary max-w-2xl mx-auto mb-8 drop-shadow-[0_1px_4px_rgba(0,0,0,0.4)]">
               A collection of projects I've built while learning the MERN stack.
               Each project helped me grow as a developer.
             </p>
@@ -168,11 +168,11 @@ const Projects = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + index * 0.1 }}
-                  className="bg-gray-100 dark:bg-white/10 border border-gray-300 dark:border-white/20 rounded-xl p-4 backdrop-blur-sm"
+                  className="bg-bg-secondary/80 border border-border rounded-xl p-4 backdrop-blur-sm"
                 >
                   <stat.icon className="w-5 h-5 text-accent mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-gray-900 dark:text-white drop-shadow-sm">{stat.getValue ? stat.getValue(projects) : stat.value}</div>
-                  <div className="text-xs text-gray-600 dark:text-gray-200">{stat.label}</div>
+                  <div className="text-2xl font-bold text-text-primary drop-shadow-sm">{stat.getValue ? stat.getValue(projects) : stat.value}</div>
+                  <div className="text-xs text-text-secondary">{stat.label}</div>
                 </motion.div>
               ))}
             </div>
@@ -193,18 +193,18 @@ const Projects = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="lg:sticky top-[65px] z-30 py-4 bg-gray-50 dark:bg-bg-primary/95 lg:backdrop-blur-lg border-b border-gray-200 dark:border-border mb-8"
+          className="lg:sticky top-[65px] z-30 py-4 bg-bg-primary/95 lg:backdrop-blur-lg border-b border-border mb-8"
         >
           <div className="flex flex-col lg:flex-row lg:items-center gap-4">
             {/* Search */}
             <div className="relative flex-1 max-w-xs">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-text-muted w-4 h-4" />
+              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted w-4 h-4" />
               <input
                 type="text"
                 placeholder="Search projects..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 bg-white dark:bg-bg-secondary border border-gray-300 dark:border-border rounded-lg text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 text-sm focus:border-accent focus:outline-none transition-colors"
+                className="w-full pl-9 pr-4 py-2 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder-text-muted text-sm focus:border-accent focus:outline-none transition-colors"
               />
             </div>
 
@@ -219,7 +219,7 @@ const Projects = () => {
                       flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-all
                       ${selectedTech === tech
                         ? 'bg-accent text-neutral-900 font-semibold'
-                        : 'bg-gray-100 dark:bg-bg-secondary text-gray-700 dark:text-text-secondary hover:text-gray-900 dark:hover:text-text-primary border border-gray-300 dark:border-border'
+                        : 'bg-bg-secondary text-text-secondary hover:text-text-primary border border-border'
                       }
                     `}
                   >
@@ -243,7 +243,7 @@ const Projects = () => {
                     px-3 py-1.5 text-sm font-medium rounded-lg transition-all
                     ${selectedType === type
                       ? 'bg-accent text-neutral-900 font-semibold'
-                      : 'bg-gray-100 dark:bg-bg-secondary text-gray-700 dark:text-text-secondary hover:text-gray-900 dark:hover:text-text-primary border border-gray-300 dark:border-border'
+                      : 'bg-bg-secondary text-text-secondary hover:text-text-primary border border-border'
                     }
                   `}
                 >
@@ -254,7 +254,7 @@ const Projects = () => {
 
             {/* View Toggle */}
             <div className="flex items-center gap-2 ml-auto">
-              <div className="flex items-center bg-gray-100 dark:bg-bg-secondary border border-gray-300 dark:border-border rounded-lg p-0.5">
+              <div className="flex items-center bg-bg-secondary border border-border rounded-lg p-0.5">
                 <button
                   onClick={() => setViewMode('grid')}
                   className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-accent text-neutral-900' : 'text-text-muted hover:text-text-primary'}`}
@@ -281,7 +281,7 @@ const Projects = () => {
             </div>
           </div>
 
-          <div className="mt-2 text-xs text-gray-600 dark:text-text-muted">
+          <div className="mt-2 text-xs text-text-muted">
             Showing {filteredProjects.length} of {projects.length} projects
           </div>
         </motion.div>
@@ -445,9 +445,9 @@ const Projects = () => {
                 animate={{ opacity: 1 }}
                 className="text-center py-16"
               >
-                <FiSearch className="w-12 h-12 text-gray-400 dark:text-text-muted mx-auto mb-4" />
-                <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">No Projects Found</h3>
-                <p className="text-gray-700 dark:text-text-secondary mb-6">
+                <FiSearch className="w-12 h-12 text-text-muted mx-auto mb-4" />
+                <h3 className="text-xl font-bold mb-2 text-text-primary">No Projects Found</h3>
+                <p className="text-text-secondary mb-6">
                   Your search and filter combination didn't return any results.
                 </p>
                 <Button onClick={clearFilters}>
@@ -465,13 +465,13 @@ const Projects = () => {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-20 text-center py-16 px-8 bg-gradient-to-br from-gray-100 dark:from-bg-secondary to-gray-200 dark:to-bg-tertiary border border-gray-300 dark:border-border rounded-2xl"
+          className="mt-20 text-center py-16 px-8 bg-gradient-to-br from-bg-secondary to-bg-tertiary border border-border rounded-2xl"
         >
           <div className="w-14 h-14 bg-accent/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
             <HiOutlineLightningBolt className="w-7 h-7 text-accent" />
           </div>
-          <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Have a Project in Mind?</h3>
-          <p className="text-gray-700 dark:text-text-secondary max-w-md mx-auto mb-8">
+          <h3 className="text-2xl font-bold mb-4 text-text-primary">Have a Project in Mind?</h3>
+          <p className="text-text-secondary max-w-md mx-auto mb-8">
             I'm always excited to work on new challenges. Let's build something great together!
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
