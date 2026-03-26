@@ -3,10 +3,10 @@ import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { 
   FiExternalLink, FiGithub, FiArrowRight, FiX, FiEye, FiStar, FiCode,
-  FiLayers, FiSearch, FiGrid, FiList, FiFolder, FiCalendar
+  FiLayers, FiSearch, FiGrid, FiList, FiFolder, FiCalendar, FiAlertCircle
 } from 'react-icons/fi';
 import { HiOutlineSparkles, HiOutlineLightningBolt } from 'react-icons/hi';
-import { SiReact, SiNodedotjs, SiMongodb, SiExpress, SiTailwindcss } from 'react-icons/si';
+import { SiReact, SiNodedotjs, SiMongodb, SiExpress, SiTailwindcss, SiJavascript, SiThreedotjs } from 'react-icons/si';
 import { Card, Badge, Button } from '../components/ui';
 import axios from 'axios';
 import { OGLBackground } from '../components/effects';
