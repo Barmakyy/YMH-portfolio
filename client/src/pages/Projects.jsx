@@ -10,6 +10,7 @@ import { SiReact, SiNodedotjs, SiMongodb, SiExpress, SiTailwindcss, SiJavascript
 import { Card, Badge, Button } from '../components/ui';
 import axios from 'axios';
 import { OGLBackground } from '../components/effects';
+import { useTheme } from '../context';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -46,6 +47,7 @@ const projectStats = [
 ];
 
 const Projects = () => {
+  const { isDark } = useTheme();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -121,7 +123,10 @@ const Projects = () => {
   };
 
   return (
-    <div className="bg-bg-primary min-h-screen">
+    <div
+      className="bg-bg-primary min-h-screen text-text-primary"
+      style={!isDark ? { backgroundColor: '#ffffff' } : undefined}
+    >
       <OGLBackground />
       {/* Hero Section with Background Image */}
       <div className="relative flex items-center justify-center overflow-hidden">
@@ -151,11 +156,11 @@ const Projects = () => {
               My Work
             </motion.div>
             
-            <h1 className="text-4xl sm:text-5xl font-bold mb-4 text-text-primary drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
+            <h1 className="text-4xl sm:text-5xl font-bold mb-4 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
               Projects I've <span className="text-accent">Built</span>
             </h1>
             
-            <p className="text-text-secondary max-w-2xl mx-auto mb-8 drop-shadow-[0_1px_4px_rgba(0,0,0,0.4)]">
+            <p className="max-w-2xl mx-auto mb-8 text-neutral-100 drop-shadow-[0_1px_4px_rgba(0,0,0,0.4)]">
               A collection of projects I've built while learning the MERN stack.
               Each project helped me grow as a developer.
             </p>
