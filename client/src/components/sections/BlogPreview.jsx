@@ -28,7 +28,7 @@ const BlogPreview = () => {
 
   if (loading) {
     return (
-      <section className="py-24 bg-bg-secondary">
+      <section className="py-20 bg-bg-secondary">
         <div className="container-custom flex justify-center">
           <div className="w-10 h-10 border-4 border-accent/30 border-t-accent rounded-full animate-spin" />
         </div>
@@ -39,23 +39,23 @@ const BlogPreview = () => {
   if (recentPosts.length === 0) return null;
 
   return (
-    <section className="py-24 bg-bg-secondary">
+    <section className="py-20 bg-bg-secondary">
       <div className="container-custom">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">Latest Articles</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold mb-3">Latest Articles</h2>
           <p className="text-text-secondary max-w-2xl mx-auto">
             Technical deep-dives, tutorials, and thoughts on web development
           </p>
         </motion.div>
 
         {/* Posts Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {recentPosts.map((post, index) => (
             <motion.div
               key={post._id}

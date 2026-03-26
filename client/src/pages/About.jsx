@@ -132,14 +132,14 @@ const interests = [
 const timeline = [
   {
     year: '2025',
-    title: 'Junior MERN Developer',
+    title: 'Software Developer',
     description: 'Currently building full-stack applications and expanding my skills. Focused on writing clean code and learning best practices.',
     highlight: true,
     achievements: ['Built 8+ full-stack projects', 'Learning TypeScript', 'Contributing to open source'],
   },
   {
     year: '2024',
-    title: 'Started MERN Journey',
+    title: 'Started Software Developer Journey',
     description: 'Began intensive learning of the MERN stack. Built my first full-stack applications and deployed them to production.',
     achievements: ['Completed React bootcamp', 'First Node.js API', 'Deployed first app to Vercel'],
   },
@@ -311,7 +311,7 @@ const About = () => {
   return (
     <div className="relative overflow-hidden">
       {/* Hero Section with Floating Shapes */}
-      <section className="relative py-24 lg:py-32 overflow-hidden">
+      <section className="relative py-20 lg:py-24 overflow-hidden">
         {/* Animated Background Shapes */}
         <FloatingShape className="w-96 h-96 bg-accent/30 -top-20 -left-20" delay={0} />
         <FloatingShape className="w-72 h-72 bg-purple-500/20 top-40 right-0" delay={1} />
@@ -321,7 +321,7 @@ const About = () => {
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:64px_64px]" />
         
         <div className="container-custom relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Image with Glow Effect */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
@@ -384,7 +384,7 @@ const About = () => {
                 Available for Work
               </motion.div>
 
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
                 <span className="text-text-primary">Hey, I'm</span>
                 <br />
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-accent via-amber-400 to-accent">
@@ -392,11 +392,11 @@ const About = () => {
                 </span>
               </h1>
               
-              <p className="text-xl sm:text-2xl text-accent/80 font-medium mb-6">
+              <p className="text-lg sm:text-xl text-accent/80 font-medium mb-6">
                 Full-Stack Developer specializing in the MERN stack.
               </p>
               
-              <p className="text-text-secondary text-lg leading-relaxed mb-10 max-w-lg">
+              <p className="text-text-secondary leading-relaxed mb-8 max-w-lg">
                 Passionate about building web applications with the MERN stack. 
                 Eager to learn, grow, and contribute to meaningful projects.
               </p>
@@ -423,20 +423,20 @@ const About = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="relative py-24 bg-bg-secondary/50">
+      <section className="relative py-20 bg-bg-secondary/50">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-accent/5 to-transparent" />
         <div className="container-custom relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-12"
           >
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">By The Numbers</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-3">By The Numbers</h2>
             <p className="text-text-secondary">A snapshot of my professional journey</p>
           </motion.div>
           
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {stats.map((stat, index) => (
               <StatCard key={stat.label} stat={stat} index={index} />
             ))}
@@ -560,7 +560,6 @@ const About = () => {
                         <tech.icon className="text-text-secondary" size={18} />
                         <span className="text-sm font-medium">{tech.name}</span>
                       </div>
-                      <span className="text-xs text-accent">{tech.level}%</span>
                     </div>
                     <div className="h-1.5 bg-bg-secondary rounded-full overflow-hidden">
                       <motion.div
@@ -604,7 +603,6 @@ const About = () => {
                         <tech.icon className="text-text-secondary" size={18} />
                         <span className="text-sm font-medium">{tech.name}</span>
                       </div>
-                      <span className="text-xs text-accent">{tech.level}%</span>
                     </div>
                     <div className="h-1.5 bg-bg-secondary rounded-full overflow-hidden">
                       <motion.div
@@ -648,7 +646,6 @@ const About = () => {
                         <tech.icon className="text-text-secondary" size={18} />
                         <span className="text-sm font-medium">{tech.name}</span>
                       </div>
-                      <span className="text-xs text-accent">{tech.level}%</span>
                     </div>
                     <div className="h-1.5 bg-bg-secondary rounded-full overflow-hidden">
                       <motion.div

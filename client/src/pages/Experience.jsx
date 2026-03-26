@@ -152,7 +152,7 @@ const Experience = () => {
         <div className="absolute inset-0 bg-black/50 dark:bg-black/70" />
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-primary to-transparent" />
 
-        <div className="container-custom relative z-10 text-center py-24">
+        <div className="container-custom relative z-10 text-center py-20">
           <motion.div
             ref={headerRef}
             initial={{ opacity: 0, y: 30 }}
@@ -169,26 +169,26 @@ const Experience = () => {
               My Journey
             </motion.div>
             
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
               Experience & <span className="text-accent">Education</span>
             </h1>
             
-            <p className="text-gray-200 text-lg max-w-2xl mx-auto mb-10 drop-shadow-[0_1px_4px_rgba(0,0,0,0.4)]">
+            <p className="text-gray-200 text-lg max-w-2xl mx-auto mb-8 drop-shadow-[0_1px_4px_rgba(0,0,0,0.4)]">
               My learning journey as a Computer Science student and self-taught MERN stack developer, building real-world projects and continuously expanding my skill set.
             </p>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto">
               {experienceStats.map((stat, index) => (
                 <motion.div
                   key={stat.label}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + index * 0.1 }}
-                  className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4"
+                  className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-3"
                 >
-                  <stat.icon className="w-5 h-5 text-accent mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-white drop-shadow-sm">{stat.value}</div>
+                  <stat.icon className="w-5 h-5 text-accent mx-auto mb-1.5" />
+                  <div className="text-xl font-bold text-white drop-shadow-sm">{stat.value}</div>
                   <div className="text-xs text-gray-200">{stat.label}</div>
                 </motion.div>
               ))}
@@ -197,14 +197,14 @@ const Experience = () => {
         </div>
       </div>
 
-      <div className="container-custom py-16">
+      <div className="container-custom py-12">
 
         {/* Work Experience Timeline */}
-        <section className="mb-20">
+        <section className="mb-16">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-3 mb-8"
+            className="flex items-center gap-3 mb-6"
           >
             <div className="w-12 h-12 bg-accent/20 rounded-xl flex items-center justify-center">
               <FiBriefcase className="w-6 h-6 text-accent" />
@@ -219,7 +219,7 @@ const Experience = () => {
             {/* Timeline Line */}
             <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-border hidden md:block" />
 
-            <div className="space-y-8">
+            <div className="space-y-6">
               {workExperience.map((job, index) => (
                 <motion.div
                   key={job.id}
@@ -233,7 +233,7 @@ const Experience = () => {
                   <div className="absolute left-4 top-8 w-5 h-5 bg-accent rounded-full border-4 border-bg-primary hidden md:block" />
 
                   <Card className="overflow-hidden">
-                    <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+                    <div className="flex flex-col sm:flex-row sm:items-start gap-3">
                       {/* Company Logo */}
                       <img
                         src={job.logo}
@@ -243,7 +243,7 @@ const Experience = () => {
 
                       <div className="flex-grow">
                         {/* Header */}
-                        <div className="flex flex-wrap items-start justify-between gap-2 mb-3">
+                        <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
                           <div>
                             <h3 className="text-xl font-bold">{job.title}</h3>
                             <p className="text-accent font-medium">{job.company}</p>
@@ -252,7 +252,7 @@ const Experience = () => {
                         </div>
 
                         {/* Meta */}
-                        <div className="flex flex-wrap gap-4 text-sm text-text-secondary mb-4">
+                        <div className="flex flex-wrap gap-3 text-sm text-text-secondary mb-3">
                           <span className="flex items-center gap-1">
                             <FiCalendar size={14} />
                             {job.startDate} — {job.endDate}
@@ -264,7 +264,7 @@ const Experience = () => {
                         </div>
 
                         {/* Description */}
-                        <ul className="space-y-2 mb-4">
+                        <ul className="space-y-1.5 mb-3">
                           {job.description.map((item, i) => (
                             <li key={i} className="flex items-start gap-2 text-text-secondary">
                               <span className="text-accent mt-1.5">•</span>
@@ -274,7 +274,7 @@ const Experience = () => {
                         </ul>
 
                         {/* Technologies */}
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-1.5">
                           {job.technologies.map((tech) => (
                             <Badge key={tech} size="sm">{tech}</Badge>
                           ))}
@@ -289,12 +289,12 @@ const Experience = () => {
         </section>
 
         {/* Education Section */}
-        <section className="mb-20">
+        <section className="mb-16">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="flex items-center gap-3 mb-8"
+            className="flex items-center gap-3 mb-6"
           >
             <div className="w-12 h-12 bg-accent/20 rounded-xl flex items-center justify-center">
               <HiOutlineAcademicCap className="w-6 h-6 text-accent" />
@@ -305,7 +305,7 @@ const Experience = () => {
             </div>
           </motion.div>
 
-          <div className="grid gap-6">
+          <div className="grid gap-4">
             {education.map((edu, index) => (
               <motion.div
                 key={edu.id}
@@ -315,13 +315,13 @@ const Experience = () => {
                 transition={{ delay: index * 0.1 }}
               >
                 <Card>
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                       <h3 className="text-xl font-bold">{edu.institution}</h3>
                       <p className="text-accent font-medium">
                         {edu.degree} in {edu.field}
                       </p>
-                      <div className="flex flex-wrap gap-4 mt-2 text-sm text-text-secondary">
+                      <div className="flex flex-wrap gap-3 mt-1.5 text-sm text-text-secondary">
                         <span className="flex items-center gap-1">
                           <FiCalendar size={14} />
                           {edu.startYear} — {edu.endYear}
@@ -332,7 +332,7 @@ const Experience = () => {
                         </span>
                       </div>
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1.5">
                       {edu.achievements.map((achievement) => (
                         <Badge key={achievement} variant="success" size="sm">
                           {achievement}
@@ -347,12 +347,12 @@ const Experience = () => {
         </section>
 
         {/* Certifications Section */}
-        <section className="mb-20">
+        <section className="mb-16">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="flex items-center gap-3 mb-8"
+            className="flex items-center gap-3 mb-6"
           >
             <div className="w-12 h-12 bg-accent/20 rounded-xl flex items-center justify-center">
               <HiOutlineBadgeCheck className="w-6 h-6 text-accent" />
@@ -363,7 +363,7 @@ const Experience = () => {
             </div>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {certifications.map((cert, index) => (
               <motion.div
                 key={cert.id}
@@ -373,8 +373,8 @@ const Experience = () => {
                 transition={{ delay: index * 0.1 }}
               >
                 <Card className="h-full">
-                  <h3 className="font-bold mb-1">{cert.name}</h3>
-                  <p className="text-text-secondary text-sm mb-2">{cert.issuer}</p>
+                  <h3 className="font-bold mb-0.5">{cert.name}</h3>
+                  <p className="text-text-secondary text-sm mb-1.5">{cert.issuer}</p>
                   <div className="flex items-center justify-between">
                     <span className="text-text-muted text-sm">{cert.date}</span>
                     <a
@@ -397,7 +397,7 @@ const Experience = () => {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center py-16 px-8 bg-gradient-to-br from-bg-secondary to-bg-tertiary border border-border rounded-2xl"
+          className="text-center py-12 px-6 bg-gradient-to-br from-bg-secondary to-bg-tertiary border border-border rounded-2xl"
         >
           <div className="w-14 h-14 bg-accent/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
             <FiDownload className="w-7 h-7 text-accent" />

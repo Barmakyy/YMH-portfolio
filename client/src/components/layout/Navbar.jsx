@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiMenu, FiX, FiSun, FiMoon, FiArrowRight } from 'react-icons/fi';
@@ -20,6 +20,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isDark, toggleTheme } = useTheme();
   const location = useLocation();
+  const mobileMenuRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,14 +34,27 @@ const Navbar = () => {
     setIsMobileMenuOpen(false);
   }, [location]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <header
       className={`
         fixed top-0 left-0 right-0 z-50
         transition-all duration-500 ease-out
         ${isScrolled
-          ? 'py-2 bg-gray-950/95 backdrop-blur-xl border-b border-gray-800 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.7)]'
-          : 'py-3 bg-gray-950/60 backdrop-blur-md border-b border-gray-800/60 shadow-[0_2px_16px_-2px_rgba(0,0,0,0.4)]'
+          ? `py-2 backdrop-blur-xl border-b shadow-lg ${isDark ? 'bg-gray-950/95 border-gray-800 shadow-black/20' : 'bg-white/95 border-gray-200 shadow-black/5'}`
+          : `py-3 backdrop-blur-md border-b ${isDark ? 'bg-gray-950/60 border-gray-800/60 shadow-black/10' : 'bg-white/60 border-gray-200/60'}`
         }
       `}
     >
@@ -58,14 +72,14 @@ const Navbar = () => {
                 className="h-full w-full object-cover"
               />
             </div>
-            <span className="text-xl font-bold font-display tracking-tight">
+            <span className={`text-xl font-bold font-display tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>
               <span className="text-accent">YMH</span>
             </span>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center">
-            <div className="flex items-center gap-1 px-2 py-1.5 rounded-full bg-white/10 border border-white/15 backdrop-blur-sm">
+            <div className={`flex items-center gap-1 px-2 py-1.5 rounded-full border backdrop-blur-sm ${isDark ? 'bg-white/10 border-white/15' : 'bg-gray-900/5 border-gray-900/10'}`}>
               {navLinks.map((link) => (
                 <NavLink
                   key={link.path}
@@ -75,7 +89,7 @@ const Navbar = () => {
                     relative px-3.5 py-1.5 text-[13px] font-bold rounded-full transition-all duration-300
                     ${isActive 
                       ? 'text-accent-contrast bg-accent shadow-md shadow-accent/30 scale-105' 
-                      : 'text-gray-200 hover:text-accent hover:bg-white/10 hover:scale-105 hover:shadow-sm'
+                      : `${isDark ? 'text-gray-200 hover:text-accent hover:bg-white/10' : 'text-gray-700 hover:text-accent hover:bg-gray-900/5'} hover:scale-105 hover:shadow-sm`
                     }
                   `}
                 >
@@ -85,11 +99,12 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Desktop Actions */}
-          <div className="hidden lg:flex items-center gap-3">
+          {/* Actions */}
+          <div className="flex items-center gap-3">
+            {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-full text-gray-300 hover:text-accent hover:bg-white/10 hover:scale-110 transition-all duration-300"
+              className={`p-2 rounded-full transition-all duration-300 hover:scale-110 ${isDark ? 'text-gray-300 hover:text-accent hover:bg-white/10' : 'text-gray-600 hover:text-accent hover:bg-gray-900/10'}`}
               aria-label="Toggle theme"
             >
               <motion.div
@@ -101,30 +116,32 @@ const Navbar = () => {
                 {isDark ? <FiSun size={18} /> : <FiMoon size={18} />}
               </motion.div>
             </button>
+
+            {/* Desktop "Let's Talk" */}
             <Link
               to="/contact"
-              className="inline-flex items-center gap-2 px-5 py-2 text-sm font-semibold rounded-full bg-accent text-accent-contrast hover:brightness-110 shadow-md shadow-accent/25 hover:shadow-lg hover:shadow-accent/30 transition-all duration-300 hover:scale-[1.02]"
+              className="hidden lg:inline-flex items-center gap-2 px-5 py-2 text-sm font-semibold rounded-full bg-accent text-accent-contrast hover:brightness-110 shadow-md shadow-accent/25 hover:shadow-lg hover:shadow-accent/30 transition-all duration-300 hover:scale-[1.02]"
             >
               Let's Talk
               <FiArrowRight size={14} />
             </Link>
-          </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden p-2 rounded-lg text-gray-200 hover:bg-white/10 transition-colors"
-            aria-label="Toggle mobile menu"
-          >
-            <motion.div
-              key={isMobileMenuOpen ? 'close' : 'menu'}
-              initial={{ rotate: -90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              transition={{ duration: 0.2 }}
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className={`lg:hidden p-2 rounded-lg transition-colors ${isDark ? 'text-gray-200 hover:bg-white/10' : 'text-gray-700 hover:bg-gray-900/10'}`}
+              aria-label="Toggle mobile menu"
             >
-              {isMobileMenuOpen ? <FiX size={22} /> : <FiMenu size={22} />}
-            </motion.div>
-          </button>
+              <motion.div
+                key={isMobileMenuOpen ? 'close' : 'menu'}
+                initial={{ rotate: -90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                transition={{ duration: 0.2 }}
+              >
+                {isMobileMenuOpen ? <FiX size={22} /> : <FiMenu size={22} />}
+              </motion.div>
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -132,11 +149,12 @@ const Navbar = () => {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
+            ref={mobileMenuRef}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="lg:hidden absolute top-full left-0 right-0 bg-gray-950/98 backdrop-blur-xl border-b border-gray-800 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.6)]"
+            className={`lg:hidden absolute top-full left-0 right-0 backdrop-blur-xl border-b ${isDark ? 'bg-gray-950/98 border-gray-800 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.6)]' : 'bg-white/98 border-gray-200 shadow-lg'}`}
           >
             <div className="container-custom py-5 space-y-1">
               {navLinks.map((link, index) => (
@@ -153,7 +171,7 @@ const Navbar = () => {
                       block px-4 py-2.5 rounded-xl text-[15px] font-bold transition-all duration-200
                       ${isActive 
                         ? 'text-accent-contrast bg-accent shadow-md scale-[1.02]' 
-                        : 'text-gray-200 hover:text-accent hover:bg-white/10 hover:pl-6 hover:shadow-sm'
+                        : `${isDark ? 'text-gray-200 hover:text-accent hover:bg-white/10' : 'text-gray-700 hover:text-accent hover:bg-gray-900/5'} hover:pl-6 hover:shadow-sm`
                       }
                     `}
                   >
@@ -161,13 +179,7 @@ const Navbar = () => {
                   </NavLink>
                 </motion.div>
               ))}
-              <div className="pt-4 flex items-center gap-3 border-t border-border/30 mt-3">
-                <button
-                  onClick={toggleTheme}
-                  className="p-2.5 rounded-xl text-gray-300 hover:text-accent hover:bg-white/10 hover:scale-110 transition-all duration-300"
-                >
-                  {isDark ? <FiSun size={20} /> : <FiMoon size={20} />}
-                </button>
+              <div className={`pt-4 flex items-center gap-3 border-t mt-3 ${isDark ? 'border-border/30' : 'border-gray-200'}`}>
                 <Link
                   to="/contact"
                   className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl bg-accent text-accent-contrast shadow-md shadow-accent/25 hover:brightness-110 transition-all duration-300"

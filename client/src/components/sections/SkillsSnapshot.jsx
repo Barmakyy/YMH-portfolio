@@ -32,16 +32,16 @@ const itemVariants = {
 
 const SkillsSnapshot = () => {
   return (
-    <section className="py-24 bg-bg-primary">
+    <section className="py-20 bg-bg-primary">
       <div className="container-custom">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">Tech Stack</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold mb-3">Tech Stack</h2>
           <p className="text-text-secondary max-w-2xl mx-auto">
             Technologies I work with to build modern, scalable applications
           </p>
@@ -53,7 +53,7 @@ const SkillsSnapshot = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-3xl mx-auto"
+          className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto"
         >
           {skills.map((skill) => (
             <motion.div
@@ -61,8 +61,8 @@ const SkillsSnapshot = () => {
               variants={itemVariants}
               whileHover={{ scale: 1.05, y: -5 }}
               className={`
-                relative p-6 rounded-xl bg-bg-secondary border border-border
-                flex flex-col items-center justify-center gap-3
+                relative p-5 rounded-xl bg-bg-secondary border border-border
+                flex flex-col items-center justify-center gap-2
                 hover:border-accent/50 transition-colors cursor-default
                 ${skill.isCore ? 'ring-2 ring-accent/20' : ''}
               `}
@@ -72,7 +72,7 @@ const SkillsSnapshot = () => {
                   Core
                 </span>
               )}
-              <skill.icon size={40} style={{ color: skill.color }} />
+              <skill.icon size={36} style={{ color: skill.color }} />
               <span className="text-sm font-medium text-text-primary">{skill.name}</span>
             </motion.div>
           ))}
@@ -84,7 +84,7 @@ const SkillsSnapshot = () => {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.5 }}
-          className="text-center mt-12"
+          className="text-center mt-10"
         >
           <Link
             to="/skills"

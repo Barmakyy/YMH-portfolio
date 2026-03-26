@@ -44,7 +44,7 @@ const FeaturedProjects = () => {
 
   if (loading) {
     return (
-      <section className="py-24 bg-bg-primary">
+      <section className="py-20 bg-bg-primary">
         <div className="container-custom flex justify-center">
           <div className="w-10 h-10 border-4 border-accent/30 border-t-accent rounded-full animate-spin" />
         </div>
@@ -55,7 +55,7 @@ const FeaturedProjects = () => {
   if (featuredProjects.length === 0) return null;
 
   return (
-    <section id="featured-projects" className="py-24 bg-bg-primary">
+    <section id="featured-projects" className="py-20 bg-bg-primary">
       <div className="container-custom">
         {/* Section Header */}
         <motion.div
@@ -63,9 +63,9 @@ const FeaturedProjects = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">Selected Work</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold mb-3">Selected Work</h2>
           <p className="text-text-secondary max-w-2xl mx-auto">
             A showcase of projects that demonstrate my skills in full-stack development
           </p>
@@ -77,7 +77,7 @@ const FeaturedProjects = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           {featuredProjects.map((project) => (
             <motion.div key={project._id} variants={itemVariants}>
@@ -100,16 +100,16 @@ const FeaturedProjects = () => {
                 </div>
 
                 {/* Content */}
-                <div className="p-6 flex-grow flex flex-col">
-                  <h3 className="text-xl font-bold mb-2 group-hover:text-accent transition-colors">
+                <div className="p-5 flex-grow flex flex-col">
+                  <h3 className="text-xl font-bold mb-1.5 group-hover:text-accent transition-colors">
                     <Link to={`/projects/${project.slug}`}>{project.title}</Link>
                   </h3>
-                  <p className="text-text-secondary text-sm mb-4 flex-grow">
+                  <p className="text-text-secondary text-sm mb-3 flex-grow">
                     {project.shortDescription}
                   </p>
 
                   {/* Tech Stack */}
-                  <div className="flex flex-wrap gap-2 mb-4">
+                  <div className="flex flex-wrap gap-1.5 mb-4">
                     {(project.techStack || []).map((tech) => (
                       <Badge key={tech} variant="accent" size="sm">
                         {tech}
@@ -118,7 +118,7 @@ const FeaturedProjects = () => {
                   </div>
 
                   {/* Links */}
-                  <div className="flex items-center gap-4 pt-4 border-t border-border">
+                  <div className="flex items-center gap-4 pt-3 border-t border-border">
                     {project.liveUrl && (
                     <a
                       href={project.liveUrl}
@@ -127,7 +127,7 @@ const FeaturedProjects = () => {
                       onClick={() => handleLinkClick('demo', project.title)}
                       className="flex items-center gap-1 text-sm text-text-secondary hover:text-accent transition-colors"
                     >
-                      <FiExternalLink size={16} />
+                      <FiExternalLink size={14} />
                       Live Demo
                     </a>
                     )}
@@ -139,7 +139,7 @@ const FeaturedProjects = () => {
                       onClick={() => handleLinkClick('github', project.title)}
                       className="flex items-center gap-1 text-sm text-text-secondary hover:text-accent transition-colors"
                     >
-                      <FiGithub size={16} />
+                      <FiGithub size={14} />
                       GitHub
                     </a>
                     )}
@@ -156,7 +156,7 @@ const FeaturedProjects = () => {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.5 }}
-          className="text-center mt-12"
+          className="text-center mt-10"
         >
           <Link
             to="/projects"

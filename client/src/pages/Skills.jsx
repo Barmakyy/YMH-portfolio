@@ -156,7 +156,6 @@ const SkillBar = ({ skill, index }) => {
         </div>
         <div className="flex items-center gap-3">
           <span className="text-xs text-text-secondary">{skill.years}y exp</span>
-          <span className="text-xs font-medium text-accent">{skill.level}%</span>
         </div>
       </div>
       <div className="h-2 bg-bg-tertiary rounded-full overflow-hidden">
@@ -245,7 +244,7 @@ const Skills = () => {
         {/* Gradient fade to page background */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-primary to-transparent" />
 
-        <div className="container-custom relative z-10 text-center py-24">
+        <div className="container-custom relative z-10 text-center py-20">
           {/* Page Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -261,10 +260,10 @@ const Skills = () => {
               Growing My Skills
             </motion.div>
             
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
+            <h1 className="text-4xl sm:text-5xl font-bold mb-4 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
               Skills & <span className="text-accent">Technologies</span>
             </h1>
-            <p className="text-gray-200 text-lg max-w-2xl mx-auto drop-shadow-[0_1px_4px_rgba(0,0,0,0.4)]">
+            <p className="text-gray-200 max-w-2xl mx-auto drop-shadow-[0_1px_4px_rgba(0,0,0,0.4)]">
               The technologies I've been learning and working with during my first year as a 
               software developer. Always eager to learn more!
             </p>
@@ -492,7 +491,6 @@ const Skills = () => {
                 >
                   <div className="flex items-center justify-between mb-3">
                     <span className="font-medium text-sm">{item.name}</span>
-                    <span className="text-xs text-accent">{item.progress}%</span>
                   </div>
                   <div className="h-1.5 bg-bg-tertiary rounded-full overflow-hidden mb-2">
                     <motion.div

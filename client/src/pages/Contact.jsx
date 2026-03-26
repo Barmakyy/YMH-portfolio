@@ -121,7 +121,7 @@ const Contact = () => {
         <div className="absolute inset-0 bg-black/50 dark:bg-black/70" />
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-primary to-transparent" />
 
-        <div className="container-custom relative z-10 text-center py-24">
+        <div className="container-custom relative z-10 text-center py-20">
           <motion.div
             ref={headerRef}
             initial={{ opacity: 0, y: 30 }}
@@ -132,33 +132,33 @@ const Contact = () => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-accent/20 border border-accent/30 rounded-full text-accent text-sm font-medium mb-6 backdrop-blur-sm"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-accent/20 border border-accent/30 rounded-full text-accent text-sm font-medium mb-4 backdrop-blur-sm"
             >
               <HiOutlineSparkles className="w-4 h-4" />
               Get in Touch
             </motion.div>
             
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
               Let's Work <span className="text-accent">Together</span>
             </h1>
             
-            <p className="text-gray-200 text-lg max-w-2xl mx-auto mb-10 drop-shadow-[0_1px_4px_rgba(0,0,0,0.4)]">
+            <p className="text-gray-200 text-lg max-w-2xl mx-auto mb-8 drop-shadow-[0_1px_4px_rgba(0,0,0,0.4)]">
               I'm currently available for freelance projects and full-time remote roles.
               I typically respond within 24 hours.
             </p>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto">
               {contactStats.map((stat, index) => (
                 <motion.div
                   key={stat.label}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + index * 0.1 }}
-                  className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4"
+                  className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-3"
                 >
-                  <stat.icon className="w-5 h-5 text-accent mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-white drop-shadow-sm">{stat.value}</div>
+                  <stat.icon className="w-5 h-5 text-accent mx-auto mb-1.5" />
+                  <div className="text-xl font-bold text-white drop-shadow-sm">{stat.value}</div>
                   <div className="text-xs text-gray-200">{stat.label}</div>
                 </motion.div>
               ))}
@@ -167,9 +167,9 @@ const Contact = () => {
         </div>
       </div>
 
-      <div className="container-custom py-10">
+      <div className="container-custom py-12">
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
           {/* Contact Form */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -201,9 +201,9 @@ const Contact = () => {
                   </motion.div>
                 </motion.div>
               ) : (
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                   {submitError && (
-                    <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-500 text-sm">
+                    <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-500 text-sm">
                       {submitError}
                     </div>
                   )}
@@ -216,7 +216,7 @@ const Contact = () => {
                     autoComplete="off"
                   />
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Input
                       label="Full Name *"
                       placeholder="Your Name"
@@ -232,7 +232,7 @@ const Contact = () => {
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Select
                       label="Subject *"
                       options={subjectOptions}
@@ -257,7 +257,7 @@ const Contact = () => {
                   <Textarea
                     label="Message *"
                     placeholder="Tell me about your project or opportunity..."
-                    rows={6}
+                    rows={5}
                     maxLength={2000}
                     showCount
                     error={errors.message?.message}
@@ -273,7 +273,7 @@ const Contact = () => {
                   <Button
                     type="submit"
                     size="lg"
-                    className="w-full py-4 text-base tracking-wide"
+                    className="w-full py-3 text-base tracking-wide"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (
@@ -281,7 +281,7 @@ const Contact = () => {
                         <motion.span
                           animate={{ rotate: 360 }}
                           transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
-                          className="inline-block"
+                          className="inline-block mr-2"
                         >
                           ⏳
                         </motion.span>
@@ -304,15 +304,15 @@ const Contact = () => {
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="lg:col-span-2 space-y-8"
+            className="lg:col-span-2 space-y-6"
           >
             {/* Availability Status */}
             <Card className="bg-gradient-to-br from-green-500/10 to-green-500/5 border-green-500/20">
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center gap-3 mb-3">
                 <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
                 <span className="text-green-500 font-medium text-sm">Available for Work</span>
               </div>
-              <h3 className="font-bold mb-2">Open to Opportunities</h3>
+              <h3 className="font-bold mb-1.5">Open to Opportunities</h3>
               <p className="text-text-secondary text-sm">
                 Currently accepting freelance projects and exploring full-time remote positions.
               </p>
@@ -320,8 +320,8 @@ const Contact = () => {
 
             {/* Contact Details */}
             <Card>
-              <h3 className="font-bold mb-4">Contact Details</h3>
-              <div className="space-y-4">
+              <h3 className="font-bold mb-3">Contact Details</h3>
+              <div className="space-y-3">
                 <div className="flex items-start gap-3">
                   <div className="p-2 bg-bg-tertiary rounded-lg">
                     <FiMail className="text-accent" />
@@ -363,8 +363,8 @@ const Contact = () => {
 
             {/* Social Links */}
             <Card>
-              <h3 className="font-bold mb-4">Connect With Me</h3>
-              <div className="space-y-3">
+              <h3 className="font-bold mb-3">Connect With Me</h3>
+              <div className="space-y-2">
                 {socialLinks.map((social) => (
                   <a
                     key={social.name}
@@ -385,7 +385,7 @@ const Contact = () => {
             </Card>
 
             {/* Response Time */}
-            <div className="text-center py-4 px-6 bg-bg-secondary border border-border rounded-xl">
+            <div className="text-center py-3 px-4 bg-bg-secondary border border-border rounded-xl">
               <div className="flex items-center justify-center gap-2 text-text-muted text-sm">
                 <FiClock className="w-4 h-4 text-accent" />
                 <span>Average response time: <strong className="text-text-primary">24 hours</strong></span>

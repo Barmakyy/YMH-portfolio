@@ -9,56 +9,31 @@ const socialLinks = [
   { name: 'Instagram', icon: FiInstagram, href: import.meta.env.VITE_INSTAGRAM_URL },
 ];
 
-const footerLinks = [
-  {
-    title: 'Navigation',
-    links: [
-      { name: 'Home', path: '/' },
-      { name: 'About', path: '/about' },
-      { name: 'Projects', path: '/projects' },
-      { name: 'Blog', path: '/blog' },
-    ],
-  },
-  {
-    title: 'Resources',
-    links: [
-      { name: 'Skills', path: '/skills' },
-      { name: 'Experience', path: '/experience' },
-      { name: 'Contact', path: '/contact' },
-      
-    ],
-  },
-];
-
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
     <footer className="bg-bg-secondary border-t border-border">
-      <div className="container-custom py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-          {/* Brand */}
-          <div className="lg:col-span-2">
+      <div className="container-custom py-8">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
+          {/* Left Side: Logo and Social Links */}
+          <div className="flex flex-col items-center sm:items-start gap-4">
             <Link 
               to="/" 
-              className="inline-block text-2xl font-bold font-display text-text-primary mb-4"
+              className="inline-block text-2xl font-bold font-display text-text-primary"
             >
               <span className="text-accent">&lt;</span>
               YMH 
               <span className="text-accent">/&gt;</span>
             </Link>
-            <p className="text-text-secondary mb-6 max-w-md">
-              Full-Stack Developer passionate about building web applications 
-              from database to deployment. Let's create something amazing together.
-            </p>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
               {socialLinks.map((social) => (
                 <a
                   key={social.name}
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 text-text-secondary hover:text-accent transition-colors"
+                  className="p-2.5 rounded-full text-text-secondary hover:text-accent hover:bg-hover-bg transition-all duration-300 transform hover:scale-110"
                   aria-label={social.name}
                 >
                   <social.icon size={20} />
@@ -66,35 +41,13 @@ const Footer = () => {
               ))}
             </div>
           </div>
-
-          {/* Links */}
-          {footerLinks.map((section) => (
-            <div key={section.title}>
-              <h4 className="text-sm font-semibold text-text-primary uppercase tracking-wider mb-4">
-                {section.title}
-              </h4>
-              <ul className="space-y-3">
-                {section.links.map((link) => (
-                  <li key={link.path}>
-                    <Link
-                      to={link.path}
-                      className="text-text-secondary hover:text-accent transition-colors"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
         </div>
-
-        {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-text-muted text-sm">
-            © {currentYear} All rights reserved.
-          </p>
         
+        {/* Copyright */}
+        <div className="mt-6 pt-6 border-t border-border text-center">
+          <p className="text-text-muted text-sm">
+            © {currentYear} YMH. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

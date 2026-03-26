@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { 
@@ -9,11 +9,12 @@ import { HiOutlineSparkles, HiOutlineLightningBolt } from 'react-icons/hi';
 import { SiReact, SiNodedotjs, SiMongodb, SiExpress, SiTailwindcss } from 'react-icons/si';
 import { Card, Badge, Button } from '../components/ui';
 import axios from 'axios';
+import { OGLBackground } from '../components/effects';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-const techFilters = ['All', 'React', 'Node.js', 'MongoDB', 'Express', 'Tailwind CSS'];
-const typeFilters = ['All', 'Full-Stack', 'Frontend'];
+const techFilters = ['React', 'Node.js', 'MongoDB', 'Express', 'Tailwind CSS'];
+const typeFilters = ['Full-Stack', 'Frontend'];
 
 const typeMap = {
   'Full-Stack': ['Full-Stack App', 'fullstack'],
@@ -61,29 +62,63 @@ const Projects = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const filteredProjects = projects.filter((project) => {
-    const techMatch = selectedTech === 'All' || project.techStack?.includes(selectedTech);
-    const typeMatch = selectedType === 'All' || 
-      project.projectType?.some((t) => typeMap[selectedType]?.includes(t));
-    const searchMatch = !searchQuery || 
-      project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (project.shortDescription || '').toLowerCase().includes(searchQuery.toLowerCase());
-    return techMatch && typeMatch && searchMatch;
-  });
+  const filteredProjects = useMemo(() => {
+    if (!projects) return [];
+    return projects.filter(project => {
+      const searchMatch = project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          project.shortDescription.toLowerCase().includes(searchQuery.toLowerCase());
+      const techMatch = selectedTech === 'All' || project.techStack.includes(selectedTech);
+      const typeMatch = selectedType === 'All' || project.type === selectedType;
+      return searchMatch && techMatch && typeMatch;
+    });
+  }, [projects, searchQuery, selectedTech, selectedType]);
 
-  const featuredProjects = filteredProjects.filter((p) => p.featured);
-  const regularProjects = filteredProjects.filter((p) => !p.featured);
+  const featuredProjects = useMemo(() => {
+    if (!projects) return [];
+    return projects.filter(p => p.isFeatured);
+  }, [projects]);
+
+  const regularProjects = useMemo(() => {
+    if (!projects) return [];
+    return projects.filter(p => !p.isFeatured);
+  }, [projects]);
+
+  const hasActiveFilters = searchQuery || selectedTech !== 'All' || selectedType !== 'All';
 
   const clearFilters = () => {
+    setSearchQuery('');
     setSelectedTech('All');
     setSelectedType('All');
-    setSearchQuery('');
   };
 
-  const hasActiveFilters = selectedTech !== 'All' || selectedType !== 'All' || searchQuery;
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen text-center">
+        <FiAlertCircle className="w-16 h-16 text-red-500 mb-4" />
+        <h2 className="text-2xl font-bold mb-2">Error Loading Projects</h2>
+        <p className="text-text-secondary">{error.message}</p>
+      </div>
+    );
+  }
+
+  const statusColors = {
+    published: 'success',
+    'in-progress': 'warning',
+    archived: 'secondary',
+  };
+
+  const techIcons = {
+    React: SiReact,
+    'Node.js': SiNodedotjs,
+    MongoDB: SiMongodb,
+    JavaScript: SiJavascript,
+    TailwindCSS: SiTailwindcss,
+    'Three.js': SiThreedotjs,
+  };
 
   return (
-    <div className="min-h-screen">
+    <div className="bg-bg-primary min-h-screen">
+      <OGLBackground />
       {/* Hero Section with Background Image */}
       <div className="relative flex items-center justify-center overflow-hidden">
         <img 
@@ -94,7 +129,7 @@ const Projects = () => {
         <div className="absolute inset-0 bg-black/50 dark:bg-black/70" />
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-primary to-transparent" />
 
-        <div className="container-custom relative z-10 text-center py-24">
+        <div className="container-custom relative z-10 text-center py-20">
           {/* Page Header */}
           <motion.div
             ref={headerRef}
@@ -112,11 +147,11 @@ const Projects = () => {
               My Work
             </motion.div>
             
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
+            <h1 className="text-4xl sm:text-5xl font-bold mb-4 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
               Projects I've <span className="text-accent">Built</span>
             </h1>
             
-            <p className="text-gray-200 text-lg max-w-2xl mx-auto mb-10 drop-shadow-[0_1px_4px_rgba(0,0,0,0.4)]">
+            <p className="text-gray-200 max-w-2xl mx-auto mb-8 drop-shadow-[0_1px_4px_rgba(0,0,0,0.4)]">
               A collection of projects I've built while learning the MERN stack.
               Each project helped me grow as a developer.
             </p>
@@ -141,10 +176,10 @@ const Projects = () => {
         </div>
       </div>
 
-      <div className="container-custom pt-10">
+      <div className="container-custom pt-8">
 
         {loading ? (
-          <div className="flex justify-center py-20">
+          <div className="flex justify-center py-16">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-accent" />
           </div>
         ) : (
@@ -154,22 +189,21 @@ const Projects = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="sticky top-20 z-30 py-4 bg-bg-primary/95 backdrop-blur-lg border-b border-border mb-10"
+          className="lg:sticky top-[65px] z-30 py-4 bg-bg-primary/95 lg:backdrop-blur-lg border-b border-border mb-8"
         >
           <div className="flex flex-col lg:flex-row lg:items-center gap-4">
             {/* Search */}
-            <div className="relative flex-1 max-w-sm">
+            <div className="relative flex-1 max-w-xs">
               <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted w-4 h-4" />
               <input
                 type="text"
                 placeholder="Search projects..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-sm focus:border-accent focus:outline-none transition-colors"
+                className="w-full pl-9 pr-4 py-2 bg-bg-secondary border border-border rounded-lg text-sm focus:border-accent focus:outline-none transition-colors"
               />
             </div>
 
-            {/* Tech Filters */}
             <div className="flex flex-wrap items-center gap-2">
               {techFilters.map((tech) => {
                 const TechIcon = techIcons[tech];
@@ -178,7 +212,7 @@ const Projects = () => {
                     key={tech}
                     onClick={() => setSelectedTech(tech)}
                     className={`
-                      flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg transition-all
+                      flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-all
                       ${selectedTech === tech
                         ? 'bg-accent text-neutral-900 font-semibold'
                         : 'bg-bg-secondary text-text-secondary hover:text-text-primary border border-border'
@@ -192,16 +226,17 @@ const Projects = () => {
               })}
             </div>
 
-            <div className="w-px h-8 bg-border hidden lg:block" />
+            <div className="w-px h-6 bg-border hidden lg:block" />
 
             {/* Type Filters */}
             <div className="flex flex-wrap items-center gap-2">
+            
               {typeFilters.map((type) => (
                 <button
                   key={type}
                   onClick={() => setSelectedType(type)}
                   className={`
-                    px-3 py-2 text-sm font-medium rounded-lg transition-all
+                    px-3 py-1.5 text-sm font-medium rounded-lg transition-all
                     ${selectedType === type
                       ? 'bg-accent text-neutral-900 font-semibold'
                       : 'bg-bg-secondary text-text-secondary hover:text-text-primary border border-border'
@@ -215,16 +250,16 @@ const Projects = () => {
 
             {/* View Toggle */}
             <div className="flex items-center gap-2 ml-auto">
-              <div className="flex items-center bg-bg-secondary border border-border rounded-lg p-1">
+              <div className="flex items-center bg-bg-secondary border border-border rounded-lg p-0.5">
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-accent text-neutral-900' : 'text-text-muted hover:text-text-primary'}`}
+                  className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-accent text-neutral-900' : 'text-text-muted hover:text-text-primary'}`}
                 >
                   <FiGrid className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-md transition-colors ${viewMode === 'list' ? 'bg-accent text-neutral-900' : 'text-text-muted hover:text-text-primary'}`}
+                  className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-accent text-neutral-900' : 'text-text-muted hover:text-text-primary'}`}
                 >
                   <FiList className="w-4 h-4" />
                 </button>
@@ -233,7 +268,7 @@ const Projects = () => {
               {hasActiveFilters && (
                 <button
                   onClick={clearFilters}
-                  className="flex items-center gap-1 px-3 py-2 text-sm text-text-muted hover:text-red-400 transition-colors"
+                  className="flex items-center gap-1 px-2.5 py-1.5 text-sm text-text-muted hover:text-red-400 transition-colors"
                 >
                   <FiX className="w-4 h-4" />
                   Clear
@@ -242,130 +277,18 @@ const Projects = () => {
             </div>
           </div>
 
-          <div className="mt-3 text-sm text-text-muted">
+          <div className="mt-2 text-xs text-text-muted">
             Showing {filteredProjects.length} of {projects.length} projects
           </div>
         </motion.div>
 
-        {/* Featured Projects */}
-        {featuredProjects.length > 0 && !hasActiveFilters && (
-          <section className="mb-16">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
-                <FiStar className="w-5 h-5 text-accent" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold">Featured Projects</h2>
-                <p className="text-text-muted text-sm">My best work</p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {featuredProjects.map((project, index) => (
-                <motion.div
-                  key={project._id || project.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <Card className="h-full overflow-hidden group" padding={false}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 h-full">
-                      <div className="relative aspect-video md:aspect-auto overflow-hidden">
-                        <img
-                          src={project.coverImage}
-                          alt={project.title}
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                        <div className="absolute bottom-4 left-4 flex gap-2">
-                          <Badge variant={statusColors[project.status]} size="sm">{project.status}</Badge>
-                          <Badge variant="accent" size="sm">Featured</Badge>
-                        </div>
-                      </div>
-
-                      <div className="p-6 flex flex-col">
-                        <div className="flex items-center gap-2 text-xs text-text-muted mb-3">
-                          <FiCalendar className="w-3 h-3" />
-                          {project.startDate ? new Date(project.startDate).getFullYear() : new Date(project.createdAt).getFullYear()}
-                        </div>
-
-                        <h3 className="text-xl font-bold mb-2 group-hover:text-accent transition-colors">
-                          {project.title}
-                        </h3>
-                        
-                        <p className="text-text-secondary text-sm mb-4 flex-grow">
-                          {project.shortDescription}
-                        </p>
-
-                        <div className="flex flex-wrap gap-2 mb-4">
-                          {project.techStack.map((tech) => (
-                            <Badge key={tech} size="sm">{tech}</Badge>
-                          ))}
-                        </div>
-
-                        <div className="flex items-center gap-4 text-xs text-text-muted mb-4 py-3 border-t border-border">
-                          <span className="flex items-center gap-1">
-                            <FiEye className="w-3 h-3" />
-                            {project.views || 0} views
-                          </span>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                          <Link
-                            to={`/projects/${project.slug}`}
-                            className="flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-2.5 transition-all"
-                          >
-                            View Details <FiArrowRight className="w-4 h-4" />
-                          </Link>
-                          {project.liveUrl && (
-                            <a
-                              href={project.liveUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="p-2 text-text-secondary hover:text-accent transition-colors"
-                            >
-                              <FiExternalLink className="w-4 h-4" />
-                            </a>
-                          )}
-                          {project.githubUrl && (
-                            <a
-                              href={project.githubUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="p-2 text-text-secondary hover:text-accent transition-colors"
-                            >
-                              <FiGithub className="w-4 h-4" />
-                            </a>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </section>
-        )}
-
         {/* All Projects */}
         <section>
-          {!hasActiveFilters && (
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-10 h-10 bg-neutral-800 rounded-lg flex items-center justify-center">
-                <FiLayers className="w-5 h-5 text-accent" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold">All Projects</h2>
-                <p className="text-text-muted text-sm">Everything I've built</p>
-              </div>
-            </div>
-          )}
-
           <AnimatePresence mode="popLayout">
             {filteredProjects.length > 0 ? (
               viewMode === 'grid' ? (
                 <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {(hasActiveFilters ? filteredProjects : regularProjects).map((project, index) => (
+                  {filteredProjects.map((project, index) => (
                     <motion.div
                       key={project._id || project.id}
                       layout
@@ -383,18 +306,19 @@ const Projects = () => {
                             loading="lazy"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                          <div className="absolute top-3 left-3">
+                          <div className="absolute top-2.5 left-2.5 flex gap-1.5">
                             <Badge variant={statusColors[project.status]} size="sm">
                               {project.status === 'published' ? 'Live' : project.status}
                             </Badge>
+                            {project.isFeatured && <Badge variant="accent" size="sm">Featured</Badge>}
                           </div>
-                          <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="absolute top-2.5 right-2.5 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                             {project.liveUrl && (
                               <a
                                 href={project.liveUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-2 bg-white/90 text-neutral-900 rounded-lg hover:bg-accent transition-colors"
+                                className="p-1.5 bg-white/90 text-neutral-900 rounded-md hover:bg-accent transition-colors"
                               >
                                 <FiExternalLink className="w-4 h-4" />
                               </a>
@@ -404,7 +328,7 @@ const Projects = () => {
                                 href={project.githubUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-2 bg-white/90 text-neutral-900 rounded-lg hover:bg-accent transition-colors"
+                                className="p-1.5 bg-white/90 text-neutral-900 rounded-md hover:bg-accent transition-colors"
                               >
                                 <FiGithub className="w-4 h-4" />
                               </a>
@@ -412,21 +336,21 @@ const Projects = () => {
                           </div>
                         </div>
 
-                        <div className="p-5 flex-grow flex flex-col">
-                          <div className="flex items-center gap-2 text-xs text-text-muted mb-2">
+                        <div className="p-4 flex-grow flex flex-col">
+                          <div className="flex items-center gap-2 text-xs text-text-muted mb-1.5">
                             <FiCalendar className="w-3 h-3" />
                             {project.startDate ? new Date(project.startDate).getFullYear() : new Date(project.createdAt).getFullYear()}
                           </div>
 
-                          <h3 className="text-lg font-bold mb-2 group-hover:text-accent transition-colors">
+                          <h3 className="text-md font-bold mb-2 group-hover:text-accent transition-colors">
                             <Link to={`/projects/${project.slug}`}>{project.title}</Link>
                           </h3>
                           
-                          <p className="text-text-secondary text-sm mb-4 flex-grow line-clamp-2">
+                          <p className="text-text-secondary text-sm mb-3 flex-grow line-clamp-2">
                             {project.shortDescription}
                           </p>
 
-                          <div className="flex flex-wrap gap-1.5 mb-4">
+                          <div className="flex flex-wrap gap-1 mb-3">
                             {project.techStack.slice(0, 4).map((tech) => (
                               <Badge key={tech} size="sm">{tech}</Badge>
                             ))}
@@ -435,14 +359,14 @@ const Projects = () => {
                             )}
                           </div>
 
-                          <div className="flex items-center justify-between pt-4 border-t border-border">
+                          <div className="flex items-center justify-between pt-3 border-t border-border">
                             <Link
                               to={`/projects/${project.slug}`}
-                              className="flex items-center gap-1 text-sm text-accent font-medium hover:gap-2 transition-all"
+                              className="flex items-center gap-1 text-sm text-accent font-medium hover:gap-1.5 transition-all"
                             >
                               View Details <FiArrowRight className="w-3 h-3" />
                             </Link>
-                            <div className="flex items-center gap-3 text-xs text-text-muted">
+                            <div className="flex items-center gap-2 text-xs text-text-muted">
                               <span className="flex items-center gap-1">
                                 <FiEye className="w-3 h-3" />
                                 {project.views || 0}
@@ -455,8 +379,8 @@ const Projects = () => {
                   ))}
                 </motion.div>
               ) : (
-                <motion.div layout className="space-y-4">
-                  {(hasActiveFilters ? filteredProjects : regularProjects).map((project, index) => (
+                <motion.div layout className="space-y-3">
+                  {filteredProjects.map((project, index) => (
                     <motion.div
                       key={project._id || project.id}
                       layout
@@ -466,8 +390,8 @@ const Projects = () => {
                       transition={{ delay: index * 0.05 }}
                     >
                       <Card className="group overflow-hidden" padding={false}>
-                        <div className="flex flex-col sm:flex-row gap-4 p-4">
-                          <div className="sm:w-48 h-32 flex-shrink-0 rounded-lg overflow-hidden">
+                        <div className="flex flex-col sm:flex-row gap-4 p-3">
+                          <div className="sm:w-40 h-28 flex-shrink-0 rounded-md overflow-hidden">
                             <img
                               src={project.coverImage}
                               alt={project.title}
@@ -475,33 +399,33 @@ const Projects = () => {
                             />
                           </div>
                           <div className="flex-grow flex flex-col">
-                            <div className="flex items-center gap-2 mb-2">
+                            <div className="flex items-center gap-2 mb-1.5">
                               <Badge variant={statusColors[project.status]} size="sm">{project.status === 'published' ? 'Live' : project.status}</Badge>
-                              <span className="text-xs text-text-muted">{project.startDate ? new Date(project.startDate).getFullYear() : new Date(project.createdAt).getFullYear()}</span>
+                              {project.isFeatured && <Badge variant="accent" size="sm">Featured</Badge>}
+                              <span className="text-xs text-text-muted ml-auto">{project.startDate ? new Date(project.startDate).getFullYear() : new Date(project.createdAt).getFullYear()}</span>
                             </div>
-                            <h3 className="text-lg font-bold mb-1 group-hover:text-accent transition-colors">
+                            <h3 className="text-md font-bold mb-1 group-hover:text-accent transition-colors">
                               {project.title}
                             </h3>
-                            <p className="text-text-secondary text-sm mb-3 line-clamp-2">{project.shortDescription}</p>
-                            <div className="flex flex-wrap gap-1.5 mb-3">
+                            <p className="text-text-secondary text-sm mb-2 line-clamp-1">{project.shortDescription}</p>
+                            <div className="flex flex-wrap gap-1 mb-2">
                               {project.techStack.slice(0, 5).map((tech) => (
                                 <Badge key={tech} size="sm">{tech}</Badge>
                               ))}
                             </div>
-                            <div className="flex items-center gap-4 mt-auto">
-                              <Link to={`/projects/${project.slug}`} className="text-sm text-accent font-medium hover:underline">
-                                View Details
+                            <div className="mt-auto flex items-center justify-between pt-2 border-t border-border">
+                              <Link
+                                to={`/projects/${project.slug}`}
+                                className="flex items-center gap-1 text-sm text-accent font-medium hover:gap-1.5 transition-all"
+                              >
+                                View Details <FiArrowRight className="w-3 h-3" />
                               </Link>
-                              {project.liveUrl && (
-                                <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-text-muted hover:text-accent flex items-center gap-1">
-                                  <FiExternalLink className="w-3 h-3" /> Demo
-                                </a>
-                              )}
-                              {project.githubUrl && (
-                                <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-text-muted hover:text-accent flex items-center gap-1">
-                                  <FiGithub className="w-3 h-3" /> Code
-                                </a>
-                              )}
+                              <div className="flex items-center gap-3 text-xs text-text-muted">
+                                <span className="flex items-center gap-1">
+                                  <FiEye className="w-3 h-3" />
+                                  {project.views || 0}
+                                </span>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -512,19 +436,18 @@ const Projects = () => {
               )
             ) : (
               <motion.div
+                layout
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="text-center py-20"
+                className="text-center py-16"
               >
-                <div className="w-16 h-16 bg-bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FiSearch className="w-8 h-8 text-text-muted" />
-                </div>
-                <h3 className="text-xl font-bold mb-2">No projects found</h3>
+                <FiSearch className="w-12 h-12 text-text-muted mx-auto mb-4" />
+                <h3 className="text-xl font-bold mb-2">No Projects Found</h3>
                 <p className="text-text-secondary mb-6">
-                  Try adjusting your search or filter criteria
+                  Your search and filter combination didn't return any results.
                 </p>
-                <Button variant="outline" onClick={clearFilters}>
-                  Clear All Filters
+                <Button onClick={clearFilters}>
+                  Clear Filters
                 </Button>
               </motion.div>
             )}
