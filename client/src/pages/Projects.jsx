@@ -105,6 +105,21 @@ const Projects = () => {
     );
   }
 
+  const statusColors = {
+    published: 'success',
+    'in-progress': 'warning',
+    archived: 'secondary',
+  };
+
+  const techIcons = {
+    React: SiReact,
+    'Node.js': SiNodedotjs,
+    MongoDB: SiMongodb,
+    JavaScript: SiJavascript,
+    TailwindCSS: SiTailwindcss,
+    'Three.js': SiThreedotjs,
+  };
+
   return (
     <div className="bg-bg-primary min-h-screen">
       <OGLBackground />
@@ -113,9 +128,9 @@ const Projects = () => {
         <img 
           src="https://i.pinimg.com/1200x/89/b9/49/89b94950b914f97a4c4831dcd1044dcc.jpg"
           alt=""
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-fill"
         />
-        <div className="absolute inset-0 bg-white/30 dark:bg-black/70" />
+        <div className="absolute inset-0 bg-black/40 dark:bg-black/70" />
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-primary to-transparent" />
 
         <div className="container-custom relative z-10 text-center py-20">
@@ -136,11 +151,11 @@ const Projects = () => {
               My Work
             </motion.div>
             
-            <h1 className="text-4xl sm:text-5xl font-bold mb-4 text-text-primary drop-shadow-sm dark:drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
+            <h1 className="text-4xl sm:text-5xl font-bold mb-4 text-text-primary drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
               Projects I've <span className="text-accent">Built</span>
             </h1>
             
-            <p className="text-text-secondary max-w-2xl mx-auto mb-8 drop-shadow-sm dark:drop-shadow-[0_1px_4px_rgba(0,0,0,0.4)]">
+            <p className="text-text-secondary max-w-2xl mx-auto mb-8 drop-shadow-[0_1px_4px_rgba(0,0,0,0.4)]">
               A collection of projects I've built while learning the MERN stack.
               Each project helped me grow as a developer.
             </p>
@@ -156,7 +171,7 @@ const Projects = () => {
                   className="bg-bg-secondary/80 border border-border rounded-xl p-4 backdrop-blur-sm"
                 >
                   <stat.icon className="w-5 h-5 text-accent mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-text-primary drop-shadow-sm dark:drop-shadow-[0_1px_4px_rgba(0,0,0,0.3)]">{stat.getValue ? stat.getValue(projects) : stat.value}</div>
+                  <div className="text-2xl font-bold text-text-primary drop-shadow-sm">{stat.getValue ? stat.getValue(projects) : stat.value}</div>
                   <div className="text-xs text-text-secondary">{stat.label}</div>
                 </motion.div>
               ))}
@@ -307,7 +322,7 @@ const Projects = () => {
                                 href={project.liveUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-1.5 bg-bg-primary/80 text-text-primary dark:bg-white/90 dark:text-neutral-900 rounded-md hover:bg-accent transition-colors"
+                                className="p-1.5 bg-white/90 text-neutral-900 rounded-md hover:bg-accent transition-colors"
                               >
                                 <FiExternalLink className="w-4 h-4" />
                               </a>
@@ -317,7 +332,7 @@ const Projects = () => {
                                 href={project.githubUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-1.5 bg-bg-primary/80 text-text-primary dark:bg-white/90 dark:text-neutral-900 rounded-md hover:bg-accent transition-colors"
+                                className="p-1.5 bg-white/90 text-neutral-900 rounded-md hover:bg-accent transition-colors"
                               >
                                 <FiGithub className="w-4 h-4" />
                               </a>
@@ -331,7 +346,7 @@ const Projects = () => {
                             {project.startDate ? new Date(project.startDate).getFullYear() : new Date(project.createdAt).getFullYear()}
                           </div>
 
-                          <h3 className="text-md font-bold mb-2 text-text-primary group-hover:text-accent transition-colors">
+                          <h3 className="text-md font-bold mb-2 group-hover:text-accent transition-colors">
                             <Link to={`/projects/${project.slug}`}>{project.title}</Link>
                           </h3>
                           
@@ -393,7 +408,7 @@ const Projects = () => {
                               {project.isFeatured && <Badge variant="accent" size="sm">Featured</Badge>}
                               <span className="text-xs text-text-muted ml-auto">{project.startDate ? new Date(project.startDate).getFullYear() : new Date(project.createdAt).getFullYear()}</span>
                             </div>
-                            <h3 className="text-md font-bold mb-1 text-text-primary group-hover:text-accent transition-colors">
+                            <h3 className="text-md font-bold mb-1 group-hover:text-accent transition-colors">
                               {project.title}
                             </h3>
                             <p className="text-text-secondary text-sm mb-2 line-clamp-1">{project.shortDescription}</p>
@@ -450,7 +465,7 @@ const Projects = () => {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-20 text-center py-16 px-8 bg-bg-secondary dark:bg-gradient-to-br dark:from-bg-secondary dark:to-bg-tertiary border border-border rounded-2xl"
+          className="mt-20 text-center py-16 px-8 bg-gradient-to-br from-bg-secondary to-bg-tertiary border border-border rounded-2xl"
         >
           <div className="w-14 h-14 bg-accent/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
             <HiOutlineLightningBolt className="w-7 h-7 text-accent" />
