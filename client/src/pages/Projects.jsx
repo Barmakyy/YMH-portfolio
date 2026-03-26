@@ -48,6 +48,7 @@ const projectStats = [
 const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedTech, setSelectedTech] = useState('All');
   const [selectedType, setSelectedType] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
@@ -58,7 +59,10 @@ const Projects = () => {
   useEffect(() => {
     axios.get(`${API_URL}/projects/public`)
       .then(({ data }) => setProjects(data.data))
-      .catch((err) => console.error('Failed to fetch projects:', err))
+      .catch((err) => {
+        console.error('Failed to fetch projects:', err);
+        setError(err);
+      })
       .finally(() => setLoading(false));
   }, []);
 
