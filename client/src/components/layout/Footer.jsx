@@ -1,5 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { FiGithub, FiLinkedin, FiTwitter, FiMail, FiHeart, FiInstagram } from 'react-icons/fi';
+import { useTheme } from '../../context';
 
 const socialLinks = [
   { name: 'GitHub', icon: FiGithub, href: import.meta.env.VITE_GITHUB_URL },
@@ -10,10 +11,15 @@ const socialLinks = [
 ];
 
 const Footer = () => {
+  const { isDark } = useTheme();
+  const location = useLocation();
+  const isProjectsPage = location.pathname.startsWith('/projects');
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-bg-secondary border-t border-border">
+    <footer
+      className={`border-t border-border ${isProjectsPage && !isDark ? 'bg-white' : 'bg-bg-secondary'}`}
+    >
       <div className="container-custom py-8">
         <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
           {/* Left Side: Logo and Social Links */}
