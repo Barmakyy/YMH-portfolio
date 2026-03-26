@@ -176,8 +176,10 @@ const Projects = () => {
                   className="bg-bg-secondary/80 border border-border rounded-xl p-4 backdrop-blur-sm"
                 >
                   <stat.icon className="w-5 h-5 text-accent mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-text-primary drop-shadow-sm">{stat.getValue ? stat.getValue(projects) : stat.value}</div>
-                  <div className="text-xs text-text-secondary">{stat.label}</div>
+                  <div className="text-2xl font-bold text-white drop-shadow-sm">
+                    {stat.getValue ? stat.getValue(projects) : stat.value}
+                  </div>
+                  <div className="text-xs text-neutral-100">{stat.label}</div>
                 </motion.div>
               ))}
             </div>
