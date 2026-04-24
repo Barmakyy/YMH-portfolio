@@ -66,6 +66,12 @@ app.use(helmet({
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
+    
+    // Allow any localhost origin in development
+    if (process.env.NODE_ENV === 'development' && origin.startsWith('http://localhost:')) {
+      return callback(null, true);
+    }
+    
     const normalizedOrigin = origin.replace(/\/$/, '');
     if (clientUrls.includes(normalizedOrigin)) {
       return callback(null, true);
@@ -115,7 +121,10 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/admin/dashboard', dashboardRoutes);
 
-// API root endpoint
+// API root endpoint (used by Render for health checks)
+app.get('/', (req, res) => res.status(200).send('OK'));
+app.head('/', (req, res) => res.status(200).send('OK'));
+
 app.get('/api', (req, res) => {
   res.status(200).json({ 
     message: 'Portfolio API',
