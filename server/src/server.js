@@ -40,9 +40,15 @@ if (!fs.existsSync(uploadsPath)) {
 }
 
 // Global middleware
-const clientUrls = (process.env.CLIENT_URL || 'http://localhost:5173')
+const defaultClientUrls = [
+  'http://localhost:5173',
+  'https://ymh-portfolio.vercel.app',
+];
+
+const clientUrls = (process.env.CLIENT_URL || defaultClientUrls.join(','))
   .split(',')
-  .map(url => url.trim().replace(/\/$/, ''));
+  .map((url) => url.trim().replace(/\/$/, ''))
+  .filter(Boolean);
 
 app.use(helmet({
   contentSecurityPolicy: {
@@ -58,7 +64,14 @@ app.use(helmet({
   },
 }));
 app.use(cors({
-  origin: clientUrls,
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    const normalizedOrigin = origin.replace(/\/$/, '');
+    if (clientUrls.includes(normalizedOrigin)) {
+      return callback(null, true);
+    }
+    return callback(new Error(`Not allowed by CORS: ${origin}`));
+  },
   credentials: true,
 }));
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));

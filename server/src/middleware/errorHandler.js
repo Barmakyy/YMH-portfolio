@@ -23,9 +23,15 @@ export const errorHandler = (err, req, res, next) => {
   }
 
   // Ensure CORS headers are set on error responses
-  const clientUrls = (process.env.CLIENT_URL || 'http://localhost:5173')
+  const defaultClientUrls = [
+    'http://localhost:5173',
+    'https://ymh-portfolio.vercel.app',
+  ];
+
+  const clientUrls = (process.env.CLIENT_URL || defaultClientUrls.join(','))
     .split(',')
-    .map(url => url.trim().replace(/\/$/, ''));
+    .map((url) => url.trim().replace(/\/$/, ''))
+    .filter(Boolean);
   
   const origin = req.headers.origin;
   if (clientUrls.includes(origin)) {
