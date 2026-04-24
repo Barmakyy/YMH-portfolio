@@ -11,8 +11,7 @@ import { Card, Badge, Button } from '../components/ui';
 import axios from 'axios';
 import { OGLBackground } from '../components/effects';
 import { useTheme } from '../context';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+import { API_URL } from '../utils/apiConfig';
 
 const techFilters = ['React', 'Node.js', 'MongoDB', 'Express', 'Tailwind CSS'];
 const typeFilters = ['Full-Stack', 'Frontend'];

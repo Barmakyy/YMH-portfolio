@@ -10,8 +10,7 @@ import { HiOutlineSparkles, HiOutlineLightningBolt } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 import { Button, Input, Textarea, Select, Badge, Card } from '../components/ui';
 import { useAnalytics } from '../hooks/useAnalytics';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+import { API_URL } from '../utils/apiConfig';
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(100),

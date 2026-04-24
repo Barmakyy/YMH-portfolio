@@ -5,8 +5,7 @@ import { FiArrowLeft, FiCalendar, FiClock, FiEye, FiTag } from 'react-icons/fi';
 import { Badge, Button } from '../components/ui';
 import axios from 'axios';
 import { useAnalytics } from '../hooks/useAnalytics';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+import { API_URL } from '../utils/apiConfig';
 
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('en-US', {

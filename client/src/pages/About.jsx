@@ -15,6 +15,7 @@ import { Button, Avatar, Badge, Card } from '../components/ui';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useAnalytics } from '../hooks/useAnalytics';
 import axios from 'axios';
+import { API_URL } from '../utils/apiConfig';
 
 const stats = [
   { label: 'Year Experience', value: 1, icon: HiOutlineCalendar, color: 'bg-neutral-800 text-accent' },
@@ -273,7 +274,7 @@ const About = () => {
     // Fetch settings to get resume URL
     const fetchSettings = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/settings/public`);
+        const response = await axios.get(`${API_URL}/settings/public`);
         if (response.data.data?.resumeUrl) {
           setResumeUrl(response.data.data.resumeUrl);
         }
@@ -292,7 +293,7 @@ const About = () => {
     if (resumeUrl) {
       trackDownload('cv');
       // Construct full URL for resume download (without /api prefix)
-      const serverUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+      const serverUrl = API_URL.replace('/api', '');
       const fullUrl = resumeUrl.startsWith('http') 
         ? resumeUrl 
         : `${serverUrl}${resumeUrl}`;

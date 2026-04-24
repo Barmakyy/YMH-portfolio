@@ -22,6 +22,17 @@ export const errorHandler = (err, req, res, next) => {
     message = `Invalid ${err.path}: ${err.value}`;
   }
 
+  // Ensure CORS headers are set on error responses
+  const clientUrls = (process.env.CLIENT_URL || 'http://localhost:5173')
+    .split(',')
+    .map(url => url.trim().replace(/\/$/, ''));
+  
+  const origin = req.headers.origin;
+  if (clientUrls.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+  }
+
   res.status(statusCode).json({
     status: 'error',
     message,

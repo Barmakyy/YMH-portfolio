@@ -42,13 +42,14 @@ export const signToken = (id) => {
 export const sendTokenResponse = (admin, statusCode, res, rememberMe = false) => {
   const token = signToken(admin._id);
 
+  const isProduction = process.env.NODE_ENV === 'production';
   const cookieOptions = {
     expires: new Date(
       Date.now() + (rememberMe ? 30 : parseInt(process.env.JWT_COOKIE_EXPIRES_IN) || 8) * 60 * 60 * 1000
     ),
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'none', // 'none' for cross-site requests (requires secure: true)
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
   };
 
   res.cookie('jwt', token, cookieOptions);

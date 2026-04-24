@@ -6,6 +6,7 @@ import {
 } from 'react-icons/fi';
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../../utils/apiConfig';
 
 const tabs = [
   { key: 'profile', label: 'Profile', icon: FiUser },
@@ -143,7 +144,7 @@ const ResumeTab = ({ settings, updateField }) => {
   const getResumeUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    const serverUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+    const serverUrl = API_URL.replace('/api', '');
     return `${serverUrl}${url}`;
   };
 

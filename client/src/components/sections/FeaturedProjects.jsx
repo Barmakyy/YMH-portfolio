@@ -5,8 +5,7 @@ import { FiArrowRight, FiExternalLink, FiGithub } from 'react-icons/fi';
 import { Card, Badge } from '../ui';
 import axios from 'axios';
 import { useAnalytics } from '../../hooks/useAnalytics';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+import { API_URL } from '../../utils/apiConfig';
 
 const containerVariants = {
   hidden: { opacity: 0 },

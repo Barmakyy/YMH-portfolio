@@ -5,8 +5,7 @@ import axios from 'axios';
 import { FiSearch, FiClock, FiCalendar, FiArrowRight, FiBookOpen, FiFileText, FiTag } from 'react-icons/fi';
 import { HiOutlineSparkles, HiOutlinePencilAlt } from 'react-icons/hi';
 import { Card, Badge, Input } from '../components/ui';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+import { API_URL } from '../utils/apiConfig';
 
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('en-US', {

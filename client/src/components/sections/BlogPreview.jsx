@@ -4,8 +4,7 @@ import { Link } from 'react-router-dom';
 import { FiArrowRight, FiClock, FiCalendar } from 'react-icons/fi';
 import { Card, Badge } from '../ui';
 import axios from 'axios';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+import { API_URL } from '../../utils/apiConfig';
 
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('en-US', {

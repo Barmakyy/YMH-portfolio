@@ -40,7 +40,10 @@ if (!fs.existsSync(uploadsPath)) {
 }
 
 // Global middleware
-const clientUrl = (process.env.CLIENT_URL || 'http://localhost:5173').replace(/\/$/, ''); // Remove trailing slash
+const clientUrls = (process.env.CLIENT_URL || 'http://localhost:5173')
+  .split(',')
+  .map(url => url.trim().replace(/\/$/, ''));
+
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
@@ -48,14 +51,14 @@ app.use(helmet({
       scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       imgSrc: ["'self'", 'data:', 'https:'],
-      connectSrc: ["'self'", clientUrl],
-      frameSrc: ["'self'", clientUrl],
-      frameAncestors: ["'self'", clientUrl],
+      connectSrc: ["'self'", ...clientUrls],
+      frameSrc: ["'self'", ...clientUrls],
+      frameAncestors: ["'self'", ...clientUrls],
     },
   },
 }));
 app.use(cors({
-  origin: [clientUrl, clientUrl + '/'], // Accept both with and without trailing slash
+  origin: clientUrls,
   credentials: true,
 }));
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
@@ -125,16 +128,14 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// 404 handler (exclude static files)
-app.use((req, res) => {
-  if (!req.path.startsWith('/uploads') && !req.path.startsWith('/api')) {
-    res.status(404).json({ message: `Route ${req.originalUrl} not found.` });
-  } else {
-    res.status(404).json({ message: `Route ${req.originalUrl} not found.` });
-  }
+// 404 handler
+app.use((req, res, next) => {
+  const error = new Error(`Not Found - ${req.originalUrl}`);
+  res.status(404);
+  next(error);
 });
 
-// Global error handler
+// Global error handler - MUST be last
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;

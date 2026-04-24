@@ -1,7 +1,6 @@
 import { useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+import { API_URL } from '../utils/apiConfig';
 
 // Generate or retrieve a session ID
 const getSessionId = () => {
