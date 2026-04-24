@@ -40,10 +40,7 @@ if (!fs.existsSync(uploadsPath)) {
 }
 
 // Global middleware
-const clientUrls = (process.env.CLIENT_URL || 'http://localhost:5173')
-  .split(',')
-  .map(url => url.trim().replace(/\/$/, '')); // Remove trailing slash
-  
+const clientUrl = (process.env.CLIENT_URL || 'http://localhost:5173').replace(/\/$/, ''); // Remove trailing slash
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
@@ -51,14 +48,14 @@ app.use(helmet({
       scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       imgSrc: ["'self'", 'data:', 'https:'],
-      connectSrc: ["'self'", ...clientUrls],
-      frameSrc: ["'self'", ...clientUrls],
-      frameAncestors: ["'self'", ...clientUrls],
+      connectSrc: ["'self'", clientUrl],
+      frameSrc: ["'self'", clientUrl],
+      frameAncestors: ["'self'", clientUrl],
     },
   },
 }));
 app.use(cors({
-  origin: clientUrls,
+  origin: [clientUrl, clientUrl + '/'], // Accept both with and without trailing slash
   credentials: true,
 }));
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
